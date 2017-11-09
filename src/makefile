@@ -1,11 +1,11 @@
-SOURCES = main.c project3.c circbuff.c  uart.c memory.c
+SOURCES = main.c project3.c circbuff.c memory.c #uart.c
 
 CMOCKAS = unittest.c
 OBJS = $(SOURCES:.c=.o)
 IMP = $(SOURCES:.c=.i)
 
 DEBUG = -g -Wall -Werror -std=c99 -O0
-CPPFLAGS = -DPROJECT2 -DVERBOSE
+CPPFLAGS = -DPROJECT3 -DVERBOSE
 LDFLAGS = -lm -Wl,-Map,project2.map
 CFLAGS = -c
 LFLAGS = -S
@@ -52,8 +52,8 @@ compile-all: $(OBJS)
 
 .PHONY: build
 build: $(OBJS)
-	$(CC) $(DEBUG) $(OBJS) $(PLATFORM_FLAGS) $(LDFLAGS) -o project2.elf
-	size project2.elf $(OBJS)
+	$(CC) $(DEBUG) $(OBJS) $(PLATFORM_FLAGS) $(LDFLAGS) -o project3.elf
+	size project3.elf $(OBJS)
 
 .PHONY: unittest
 unittest: $(MOCKS)
@@ -61,4 +61,4 @@ unittest: $(MOCKS)
 
 .PHONY: clean
 clean:
-	-rm *.i *.o *.map *.d project2.elf unittest *.out
+	-rm *.i *.o *.map *.d *.elf unittest *.out

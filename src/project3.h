@@ -21,7 +21,12 @@
  *
  *@return VOID
  */
-void project2(void);
+void project3(void);
+
+
+
+void profileAll(void);
+
 
 
 #endif /*__project3 _h__*/
