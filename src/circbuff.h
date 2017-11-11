@@ -94,7 +94,7 @@ CB_status CB_peek(CB_t * buff, uint32_t positionFromHead, uint8_t *readValue);
  *@return
 
  */
-CB_status CB_init(CB_t * buff, uint32_t length);
+CB_status CB_init(CB_t * buff, uint8_t length);
 
 /**
  *@brief  destroys current buffer and makes memory available

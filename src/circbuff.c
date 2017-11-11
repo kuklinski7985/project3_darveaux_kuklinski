@@ -100,23 +100,19 @@ CB_status CB_peek(CB_t * buff, uint32_t positionFromHead, uint8_t *readValue)
   if(((buff->headptr)+positionFromHead) >= ((buff->circbuff) + (buff->buffLength)))
     {
       dist2End = (buff->buffLength) - (((buff->circbuff)+(buff->buffLength))-(buff->headptr))+1;
-      //printf("dist2end: %d\n\n",dist2End);
       newPos = positionFromHead - dist2End - 1;
-      //printf("newPos: %d\n",newPos);
       *readValue = *((buff->circbuff) + newPos);
-      //printf("readValue Add: %p\n",((buff->circbuff) + newPos));
     }
     else
     {
       *readValue = *((buff->headptr) + positionFromHead);
-      //printf("readValue Add: %p\n",readValue);
     }
   return no_error;
 }
 
-CB_status CB_init(CB_t * buff, uint32_t length){
+CB_status CB_init(CB_t * buff, uint8_t length){
 
-  buff->circbuff  = (uint8_t*)malloc((sizeof(size_t))*length);
+	buff->circbuff  = (uint8_t*) malloc((sizeof(size_t))*length);
 
   
   if (buff->circbuff == NULL)
