@@ -10,8 +10,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#ifndef project2_h_
-#define project2_h_
+#ifndef project3_h_
+#define project3_h_
 
 
 /**
@@ -21,7 +21,7 @@
  *
  *@return VOID
  */
-void project2(void);
+void project3(void);
 
 /**
  *@brief processes received data

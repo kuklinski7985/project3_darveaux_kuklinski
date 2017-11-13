@@ -116,7 +116,7 @@ void UART0_IRQHandler()
 	{
 		rx_packet = UART0_D; // read data UART data register into input variable
 		status = CB_buffer_add_item (userbuff,rx_packet);  //get status of circular buffer
-		if (status==0) //buffer is full
+		if (status == buffer_full) //buffer is full
 		{
 			dump_flag=1;
 		}
