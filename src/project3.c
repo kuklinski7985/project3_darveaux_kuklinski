@@ -23,63 +23,91 @@ CB_t * userbuff;        // define a pointer to our circular buffer structure
 uint8_t bufferSize = 16;           //sets circular buffer size
 CB_status status;		//define the circular buffer status structure
 
-uint8_t dump_flag;		//define a flag to determine when to transmit data statistics
 void project3(void)
 {
 	__enable_irq();  //enable global interrupts
 	NVIC_EnableIRQ(UART0_IRQn);    //enable urat0 interrupts
+	NVIC_EnableIRQ(TPM0_IRQn);
 	userbuff = (CB_t*) malloc(sizeof(CB_t));  //allocate space for the circular buffer struct
 	status = CB_init(userbuff,bufferSize);    // initialize the circular buffer
 	UART_configure();                //configures the UART
 
+	/******Messages For UART*******/
 	uint8_t CR = 0x0d;  			       				// carriage return ascii code
 	uint8_t testOut[] = "***UART connection established***";
 	uint8_t testOutLength =33;
+	uint8_t failedMessage[] = "Malloc failed!";
+	uint8_t failedLength = 14;
+	uint8_t ticksElap[] = "# Ticks Elapased: ";
+	uint8_t ticksLength = 18;
+	/*****************************/
+
+	uint32_t startVal = 0;
+	uint32_t endVal = 0;
+	uint32_t totalTime = 0;
 
 	UART_send_n(testOut,testOutLength);
 	UART_send(&CR);  //send a carriage return
 
-	//turning on the counter
 	uint8_t *dstPtr, *srcPtr;
-	uint16_t n=16;
-	uint8_t failedMessage[] = "Malloc failed!";
-	uint8_t failedLength = 14;
-	//uint16_t * ITOAcounterValue;
-	uint32_t CNTValue;
+	uint16_t bytesMoved=100;			//change this value for number of bytes to be moved
 
-	dstPtr = (uint8_t*)malloc((sizeof(size_t))*n);
+	dstPtr = (uint8_t*)malloc((sizeof(size_t))*bytesMoved);
 	if (dstPtr == NULL)
 	{
 		UART_send_n(failedMessage,failedLength);
 		UART_send(&CR);
 	}
 
-	srcPtr = (uint8_t*)malloc((sizeof(size_t))*n);
+	srcPtr = (uint8_t*)malloc((sizeof(size_t))*bytesMoved);
 	if (srcPtr == NULL)
 	{
 		UART_send_n(failedMessage,failedLength);
 		UART_send(&CR);
 	}
 
-	myTPM_init();  //initialize timer
-	TPM0_SC |= TPM_SC_CMOD_MASK;
-	my_memmove(srcPtr,dstPtr,n);
-	TPM0_SC &= TPM_SC_CMOD_MASK;  // turning off counter
+	myTPM_init();
+	//set start value of timer to startVal
+	//memmove(dstPtr,srcPtr,bytesMoved);
 
-	CNTValue = TPM0_BASE_PTR->CNT;
-	//ITOAcounterValue = my_itoa(CNTValue,ITOAcounterValue,10);
-	UART_send_n(failedMessage,failedLength);
+	//set end value of timer to endVal
+	//location of counter value
+	//TPM0_BASE_PTR->CNT;
 
+	totalTime = endVal - startVal;
+	uint8_t arrayTicks[6] = {0};
+	uint8_t * ticksPtr;
+	uint32_t valueLength = 0;
 
-
-
-	/*for (;;)
+	if (totalTime <10)
 	{
+		valueLength =1;  			// count value is a single ascii character
+	}
+	else if (10 <=totalTime && totalTime <100)
+	{
+		valueLength =2; 		//count value is 2 ascii characters
+	}
+	else if (100 <=totalTime && totalTime <999)
+	{
+		valueLength =3;  	//count value is 3 ascii characters
+	}
+	else if (1000 <=totalTime && totalTime <9999)
+	{
+		valueLength =4; 		//count value is 2 ascii characters
+	}
+	else if (10000 <=totalTime && totalTime <99999)
+	{
+		valueLength =5; 		//count value is 2 ascii characters
+	}
+	else if (100000 <=totalTime && totalTime <999999)
+	{
+		valueLength =6; 		//count value is 2 ascii characters
+	}
 
-		if (dump_flag==1)  // check to see if buffer has been filled and statistics should be transmitted
-			{
-				dump_flag=0;
-			}
-	}*/
+	ticksPtr = my_itoa(totalTime, arrayTicks, 10);
+
+	UART_send_n(ticksPtr, valueLength);
+	UART_send(&CR);  //send a carriage return
 }
+
 
