@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include "circbuff.h"
 #include "uart.h"
 #include "debug.h"
@@ -67,14 +68,19 @@ void project3(void)
 	}
 
 	myTPM_init();
-	//set start value of timer to startVal
-	//memmove(dstPtr,srcPtr,bytesMoved);
-
-	//set end value of timer to endVal
-	//location of counter value
-	//TPM0_BASE_PTR->CNT;
-
+	//turning on timer
+	TPM0->CNT = 0;
+	startVal = TPM0->CNT;
+	TPM0->SC |= TPM_SC_CMOD(0b01);
+	//set value of timer
+	memmove(dstPtr,srcPtr,bytesMoved);
+	//turning off counter
+	TPM0->SC |= TPM_SC_CMOD(0b00);
+	//set end value of counter
+	endVal = TPM0->CNT;
 	totalTime = endVal - startVal;
+
+	UART_send_n(ticksElap,ticksLength);
 	uint8_t arrayTicks[6] = {0};
 	uint8_t * ticksPtr;
 	uint32_t valueLength = 0;

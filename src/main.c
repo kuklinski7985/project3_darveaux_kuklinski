@@ -2,12 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "Cpu.h"
-#include "Events.h"
-#include "clockMan1.h"
-#include "pin_init.h"
-#include "osa1.h"
-//#include "Init_Config.h"
 #include "circbuff.h"
 #include "uart.h"
 #include "debug.h"
