@@ -41,26 +41,42 @@ void project3(void)
 	uint8_t failedLength = 14;
 	uint8_t ticksElap[] = "# Ticks Elapased: ";
 	uint8_t ticksLength = 18;
+
+	//uint8_t testMessage[] = "Test Message: ";
+	//uint8_t testMessageLength = 14;
+	//uint8_t testArray[6] = {0};
+	//uint8_t *testPtr;
 	/*****************************/
 
-	uint32_t startVal = 0;
-	uint32_t endVal = 0;
-	uint32_t totalTime = 0;
 
-	UART_send_n(testOut,testOutLength);
+	uint8_t arrayTicks[6] = {0};
+	uint8_t * ticksPtr;
+	uint32_t valueLength = 0;
+	uint16_t startVal = 0;
+	uint16_t endVal = 0;
+	uint16_t totalTime = 0;
+
+	UART_send_n(testOut,testOutLength);  //Sending "UART Connection established"
 	UART_send(&CR);  //send a carriage return
 
-	uint8_t *dstPtr, *srcPtr;
-	uint16_t bytesMoved=100;			//change this value for number of bytes to be moved
+	//uint8_t *dstPtr, *srcPtr;
+	uint8_t *srcPtr;
+	uint16_t bytesMoved=5000;			//change this value for number of bytes to be moved
 
-	dstPtr = (uint8_t*)malloc((sizeof(size_t))*bytesMoved);
+	/*dstPtr = (uint8_t*)malloc((sizeof(size_t))*bytesMoved);
 	if (dstPtr == NULL)
 	{
 		UART_send_n(failedMessage,failedLength);
 		UART_send(&CR);
-	}
+	}*/
 
-	srcPtr = (uint8_t*)malloc((sizeof(size_t))*bytesMoved);
+	/*using an array in order to utilize both the heap and the stack when
+	 * number of bytes that need to be moved gets high
+	 * used of the arry is for the stack*/
+	uint8_t dst[bytesMoved];
+
+	/*used malloc to utilize the heap*/
+	srcPtr = (uint8_t*)malloc((sizeof(uint8_t))*bytesMoved);
 	if (srcPtr == NULL)
 	{
 		UART_send_n(failedMessage,failedLength);
@@ -68,12 +84,12 @@ void project3(void)
 	}
 
 	myTPM_init();
-	//turning on timer
-	TPM0->CNT = 0;
+	TPM0->CNT = TPM_CNT_COUNT(0x0);
 	startVal = TPM0->CNT;
+
 	TPM0->SC |= TPM_SC_CMOD(0b01);
 	//set value of timer
-	memmove(dstPtr,srcPtr,bytesMoved);
+	my_memmove(dst,srcPtr,bytesMoved);
 	//turning off counter
 	TPM0->SC |= TPM_SC_CMOD(0b00);
 	//set end value of counter
@@ -81,9 +97,7 @@ void project3(void)
 	totalTime = endVal - startVal;
 
 	UART_send_n(ticksElap,ticksLength);
-	uint8_t arrayTicks[6] = {0};
-	uint8_t * ticksPtr;
-	uint32_t valueLength = 0;
+
 
 	if (totalTime <10)
 	{
@@ -99,21 +113,25 @@ void project3(void)
 	}
 	else if (1000 <=totalTime && totalTime <9999)
 	{
-		valueLength =4; 		//count value is 2 ascii characters
+		valueLength =4; 		//count value is 4 ascii characters
 	}
 	else if (10000 <=totalTime && totalTime <99999)
 	{
-		valueLength =5; 		//count value is 2 ascii characters
+		valueLength =5; 		//count value is 5 ascii characters
 	}
 	else if (100000 <=totalTime && totalTime <999999)
 	{
-		valueLength =6; 		//count value is 2 ascii characters
+		valueLength =6; 		//count value is 6 ascii characters
 	}
 
 	ticksPtr = my_itoa(totalTime, arrayTicks, 10);
 
 	UART_send_n(ticksPtr, valueLength);
 	UART_send(&CR);  //send a carriage return
+
+	//free(dstPtr);
+	free(srcPtr);
+	return;
 }
 
 
