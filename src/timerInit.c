@@ -10,17 +10,11 @@
 #include <stdlib.h>
 #include "timerInit.h"
 #include "MKL25Z4.h"
-#include "core_cm0plus.h"
+
 
 void myTPM_init()
 {
 	/**********clock to TPM setting**************/
-	//Setting internal reference clock and enabling for use as MCGIRCLK
-	//MCG-> C1 = MCG_C1_IREFS_MASK | MCG_C1_IRCLKEN_MASK;
-
-	//Setting internal reference clock as fast (vs. slow)
-	//MCG -> C2 |= MCG_C2_IRCS_MASK;
-
 	//system clock gating control register, clock gate to TPM0 module
 	SIM -> SCGC6 |=SIM_SCGC6_TPM0_MASK;
 
@@ -28,9 +22,6 @@ void myTPM_init()
 	SIM-> SOPT2 |= SIM_SOPT2_TPMSRC(1);
 
 	/******TPM configuration settings********/
-	//Turns on DMA
-	//TPM0->SC |= TPM_SC_DMA_MASK;
-
 	//setting counter to count up, should be 0
 	TPM0->SC &= ~(TPM_SC_CPWMS_MASK);
 
@@ -41,10 +32,6 @@ void myTPM_init()
 
 	//sets prescale to divide by 1
 	TPM0->SC |= TPM_SC_PS_MASK;
-
-	/*LPTPM counter increments on every LPTPM counter clock
-	use this to turn on timer before fxn to profile*/
-	//TPM0->SC |= TPM_SC_CMOD(0b01);
 
 	//enable TOF interrupts
 	TPM0->SC |= TPM_SC_TOIE_MASK;
@@ -64,5 +51,6 @@ void myTPM_init()
 	TPM0_C0SC |= TPM_CnSC_DMA_MASK;
 
 	return;
-
 }
+
+
