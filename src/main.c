@@ -9,6 +9,7 @@
 #include "project3.h"
 
 #define PROJECT3
+#define PROFILEKL25Z
 
 
 extern CB_t * userbuff;        // define a pointer to our circular buffer structure

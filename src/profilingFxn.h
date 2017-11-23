@@ -18,7 +18,16 @@
  *
  *@return VOID
  */
-void profile_All(uint16_t bytesMoved);
+void profile_All_KL25Z(uint16_t bytesMoved);
+
+/**
+ *@brief
+ *
+ *@param none
+ *
+ *@return VOID
+ */
+void profile_All_BBB(uint16_t bytesMoved);
 
 /**
  *@brief

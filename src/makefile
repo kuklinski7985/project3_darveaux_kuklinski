@@ -12,16 +12,19 @@ LFLAGS = -S
 
 ifeq ($(PLATFORM),HOST)
 	CC = gcc
+	CPPFLAGS += -DPROFILEHOST
 
 endif
 
 ifeq ($(PLATFORM),BBB)
 	CC = arm-linux-gnueabihf-gcc
+	CPPFLAGS += -DPROFILEBBB
 
 endif
 
 ifeq ($(PLATFORM),KL25Z)
-	CC = arm-none-eabi-gcc 
+	CC = arm-none-eabi-gcc
+	CPPFLAGS += DPROFILEKL25Z
 	PLATFORM_FLAGS = -march=armv6 \
 		 -mtune=cortex-m0plus\
 		 -mthumb \

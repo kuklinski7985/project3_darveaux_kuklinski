@@ -27,8 +27,17 @@ CB_status status;		//define the circular buffer status structure
 
 void project3(void)
 {
+#ifdef PROFILEBBB
+	profile_All_BBB(10);
+	profile_All_BBB(100);
+	profile_All_BBB(1000);
+	profile_All_BBB(5000);
+#endif
+
+
+#ifdef PROFILEKL25Z
 	__enable_irq();  //enable global interrupts
-	NVIC_EnableIRQ(UART0_IRQn);    //enable urat0 interrupts
+	NVIC_EnableIRQ(UART0_IRQn);    //enable uart0 interrupts
 	NVIC_EnableIRQ(TPM0_IRQn);
 	userbuff = (CB_t*) malloc(sizeof(CB_t));  //allocate space for the circular buffer struct
 	status = CB_init(userbuff,bufferSize);    // initialize the circular buffer
@@ -47,23 +56,24 @@ void project3(void)
 	uint8_t tenBytes[] = "********testing 10 bytes*********";
 	UART_send_n(tenBytes,testOutLength);
 	UART_send(&CR);
-	profile_All(10);
+	profile_All_KL25Z(10);
 
 	uint8_t hundredBytes[] = "********testing 100 bytes********";
 	UART_send_n(hundredBytes,testOutLength);
 	UART_send(&CR);
-	profile_All(100);
+	profile_All_KL25Z(100);
 
 	uint8_t thousandBytes[] = "********testing 1000 bytes*******";
 	UART_send_n(thousandBytes,testOutLength);
 	UART_send(&CR);
-	profile_All(1000);
+	profile_All_KL25Z(1000);
 
 	uint8_t fiveKBytes[] = "********testing 5000 bytes*******";
 	UART_send_n(fiveKBytes,testOutLength);
 	UART_send(&CR);
-	profile_All(5000);
+	profile_All_KL25Z(5000);
 
+#endif
 	return;
 }
 

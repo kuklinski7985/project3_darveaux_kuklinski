@@ -14,11 +14,73 @@
 #include "uart.h"
 #include "memory.h"
 #include "conversion.h"
+#include <time.h>
+#include <sys/time.h>
 
-	//my_memset(srcPtr,bytesMoved,'z');
-
-void profile_All(uint16_t bytesMoved)
+void profile_All_BBB(uint16_t bytesMoved)
 {
+	/*information on gettimeofday usage was obtained from
+	   *man7.org/linux/man-pages/man2/gettimeofday.2.html
+	   *
+	   *contains a struct timeval with members time_t tv_sec and
+	   *suseconds_t tv_usec.
+	   *gettimeofday(struct timeval *tv, struct timezone *tz)
+	   *#INCLUDE <time.h> and <sys/time.h>
+	*/
+	  uint8_t dst[bytesMoved];
+
+	  uint8_t *srcPtr;
+	  srcPtr = (uint8_t*) malloc((sizeof(size_t))*bytesMoved);
+	  if (srcPtr == NULL)
+	  {
+	    printf("src malloc failed\n");
+	  }
+
+	  struct timeval start, end;
+	  uint16_t totaltime;
+
+	  for(uint8_t i=0; i<6; i++)
+	  {
+		  totaltime = 0;
+		  if(i == 0)
+		  {
+			  gettimeofday(&start,NULL);
+			  my_memmove(dst,srcPtr,bytesMoved);
+			  gettimeofday(&end,NULL);
+			  totaltime = (end.tv_sec-start.tv_sec) +
+					  (end.tv_usec - start.tv_usec);
+			  printf("my_memmove | total time: %d\n",totaltime);
+		  }
+		  if(i == 1)
+		  {
+			  printf("i = 1\n");
+		  }
+		  if(i == 2)
+		  {
+			  printf("i = 2\n");
+		  }
+		  if(i == 3)
+		  {
+			  printf("i = 3\n");
+		  }
+		  if(i == 4)
+		  {
+			  printf("i = 4\n");
+		  }
+		  if(i == 5)
+		  {
+			  printf("i = 5\n");
+		  }
+	  }
+
+	  free(srcPtr);
+	  return;
+
+}
+
+void profile_All_KL25Z(uint16_t bytesMoved)
+{
+
 	uint8_t failedMessage[] = "Malloc failed!";
 	uint8_t failedLength = 14;
 	uint8_t arrayTicks[5] = {0};
@@ -151,7 +213,6 @@ void profile_All(uint16_t bytesMoved)
 		UART_send_n(ticksPtr, valueLength);						//sends message
 		UART_send(&CR);  										//send a carriage return
 	}
-	//UART_send(&CR);
 	return;
 }
 
