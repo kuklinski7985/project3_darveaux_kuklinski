@@ -12,13 +12,18 @@
 #include <stdint.h>
 #include <string.h>
 #include "circbuff.h"
-#include "uart.h"
+
 #include "debug.h"
 #include "project3.h"
-#include "MKL25Z4.h"
+
+#ifdef PROFILEKL25Z
+ #include "MKL25Z4.h"
+ #include "uart.h"
+ #include "timerInit.h"
+#endif
+
 #include "conversion.h"
 #include "memory.h"
-#include "timerInit.h"
 #include "profilingFxn.h"
 
 CB_t * userbuff;        // define a pointer to our circular buffer structure
@@ -27,13 +32,24 @@ CB_status status;		//define the circular buffer status structure
 
 void project3(void)
 {
-#ifdef PROFILEBBB
-	profile_All_BBB(10);
-	profile_All_BBB(100);
-	profile_All_BBB(1000);
-	profile_All_BBB(5000);
-#endif
 
+  //#if defined (PROFILEHOST) || defined (PROFILEBBB)
+  //printf("Host working\n");
+  //#endif
+  
+#if defined (PROFILEHOST) || defined (PROFILEBBB)
+  printf("****Profile for 10 Bytes****\n");
+  profile_All_BBB(10);
+  
+  printf("***Profile for 100 Bytes****\n");
+  profile_All_BBB(100);
+  
+  printf("***Profile for 1000 Bytes***\n");
+  profile_All_BBB(1000);
+  
+  printf("***Profile for 5000 Bytes***\n");
+  profile_All_BBB(5000);
+#endif
 
 #ifdef PROFILEKL25Z
 	__enable_irq();  //enable global interrupts
@@ -44,7 +60,7 @@ void project3(void)
 	UART_configure();                //configures the UART
 
 	/******Messages For UART*******/
-	uint8_t CR = 0x0d;  			       				// carriage return ascii code
+	uint8_t CR = 0x0d;  			  // carriage return ascii code
 	uint8_t testOut[]= "***UART connection established***";
 	uint8_t testOutLength =33;
 	/*****************************/

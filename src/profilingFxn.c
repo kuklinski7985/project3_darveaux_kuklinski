@@ -10,13 +10,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include "profilingFxn.h"
+
+#ifdef PROFILEKL25Z
 #include "MKL25Z4.h"
+#endif
+
 #include "uart.h"
 #include "memory.h"
 #include "conversion.h"
 #include <time.h>
 #include <sys/time.h>
 
+
+#if defined (PROFILEHOST) || defined (PROFILEBBB)
 void profile_All_BBB(uint16_t bytesMoved)
 {
 	/*information on gettimeofday usage was obtained from
@@ -45,31 +51,58 @@ void profile_All_BBB(uint16_t bytesMoved)
 		  if(i == 0)
 		  {
 			  gettimeofday(&start,NULL);
+			  memmove(dst,srcPtr,bytesMoved);
+			  gettimeofday(&end,NULL);
+			  totaltime = (end.tv_sec-start.tv_sec) +
+					  (end.tv_usec - start.tv_usec);
+			  printf("memmove        | total time: %d\n",totaltime);
+		  }
+		  if(i == 1)
+		  {
+		    	  gettimeofday(&start,NULL);
 			  my_memmove(dst,srcPtr,bytesMoved);
 			  gettimeofday(&end,NULL);
 			  totaltime = (end.tv_sec-start.tv_sec) +
 					  (end.tv_usec - start.tv_usec);
-			  printf("my_memmove | total time: %d\n",totaltime);
-		  }
-		  if(i == 1)
-		  {
-			  printf("i = 1\n");
+			  printf("my_memmove     | total time: %d\n",totaltime);
 		  }
 		  if(i == 2)
 		  {
-			  printf("i = 2\n");
-		  }
+		  	  gettimeofday(&start,NULL);
+			  //put function call to DMA_my_memmove		  
+			  gettimeofday(&end,NULL);
+			  totaltime = (end.tv_sec-start.tv_sec) +
+					  (end.tv_usec - start.tv_usec);
+			  printf("DMA my_memmove | total time: %d\n",totaltime);}
 		  if(i == 3)
 		  {
-			  printf("i = 3\n");
+		          gettimeofday(&start,NULL);
+		          memset(srcPtr,'z',bytesMoved);	//function to be tested
+			  gettimeofday(&end,NULL);
+			  totaltime = (end.tv_sec-start.tv_sec) +
+					  (end.tv_usec - start.tv_usec);
+			  printf("memset         | total time: %d\n",totaltime);
+
 		  }
 		  if(i == 4)
 		  {
-			  printf("i = 4\n");
+			  gettimeofday(&start,NULL);
+                          my_memset(srcPtr,bytesMoved,'z');
+			  gettimeofday(&end,NULL);
+			  totaltime = (end.tv_sec-start.tv_sec) +
+					  (end.tv_usec - start.tv_usec);
+			  printf("my_memset      | total time: %d\n",totaltime);
+
 		  }
 		  if(i == 5)
 		  {
-			  printf("i = 5\n");
+			  gettimeofday(&start,NULL);
+                    	  //PUT DMA my_memset FUNCTION CALL HERE
+			  gettimeofday(&end,NULL);
+			  totaltime = (end.tv_sec-start.tv_sec) +
+					  (end.tv_usec - start.tv_usec);
+			  printf("DMA_my_memset  | total time: %d\n",totaltime);
+
 		  }
 	  }
 
@@ -77,7 +110,9 @@ void profile_All_BBB(uint16_t bytesMoved)
 	  return;
 
 }
+#endif
 
+#ifdef PROFILEKL25Z
 void profile_All_KL25Z(uint16_t bytesMoved)
 {
 
@@ -246,4 +281,5 @@ uint32_t getValueLength(uint16_t length)
 
 	return valueLength;
 }
+#endif
 

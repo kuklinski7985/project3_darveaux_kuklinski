@@ -1,4 +1,4 @@
-SOURCES = main.c project3.c circbuff.c memory.c #uart.c
+SOURCES = main.c project3.c circbuff.c memory.c profilingFxn.c #uart.c
 
 CMOCKAS = unittest.c
 OBJS = $(SOURCES:.c=.o)

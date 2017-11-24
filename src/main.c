@@ -5,18 +5,19 @@
 #include "circbuff.h"
 #include "uart.h"
 #include "debug.h"
+
+#ifdef PROFILEKL25Z
 #include "MKL25Z4.h"
+#endif
+
 #include "project3.h"
 
-#define PROJECT3
-#define PROFILEKL25Z
 
+extern CB_t * userbuff;        //define a pointer to our circular buffer structure
+//extern uint8_t size;         //sets circular buffer size
+extern CB_status status;       //define the circular buffer status structure
 
-extern CB_t * userbuff;        // define a pointer to our circular buffer structure
-//extern uint8_t size;           //sets circular buffer size
-extern CB_status status;		//define the circular buffer status structure
-
-extern uint8_t dump_flag;		//define a flag to determine when to transmit data statistics
+extern uint8_t dump_flag;      //define a flag to determine when to transmit data statistics
 
 
 int main()
