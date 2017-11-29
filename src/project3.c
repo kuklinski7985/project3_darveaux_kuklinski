@@ -12,7 +12,6 @@
 #include <stdint.h>
 #include <string.h>
 #include "circbuff.h"
-
 #include "debug.h"
 #include "project3.h"
 
@@ -33,10 +32,6 @@ CB_status status;		//define the circular buffer status structure
 void project3(void)
 {
 
-  //#if defined (PROFILEHOST) || defined (PROFILEBBB)
-  //printf("Host working\n");
-  //#endif
-  
 #if defined (PROFILEHOST) || defined (PROFILEBBB)
   printf("****Profile for 10 Bytes****\n");
   profile_All_BBB(10);
@@ -56,6 +51,11 @@ void project3(void)
 	NVIC_EnableIRQ(UART0_IRQn);    //enable uart0 interrupts
 	NVIC_EnableIRQ(TPM0_IRQn);
 	userbuff = (CB_t*) malloc(sizeof(CB_t));  //allocate space for the circular buffer struct
+
+	if(userbuff == NULL)
+	{
+		return;
+	}
 	status = CB_init(userbuff,bufferSize);    // initialize the circular buffer
 	UART_configure();                //configures the UART
 
