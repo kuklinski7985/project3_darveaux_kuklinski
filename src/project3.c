@@ -1,10 +1,15 @@
 /**
-* @file project2.c
-* @brief Defines the data processing portion of Project2, ECEN5816.  Uses
-* UART and circular buffer constructions to track statistics of input
-* character values
+* @file project3.c
+* @brief used for project3 assignment in ECEN5813.  Project includes
+* profiling self written and standard library versions of functions including
+* DMA transfers, circular buffer enhancements, SPI driver interface for a Nordic
+* wireless transceiver, and binary logger.
+*
+* Code can be used for both BeagleBone Black, Linux host machine, and KL25Z. Use
+* appropriate compile time flags for target processors.
+*
 * @author Andrew Kuklinski and Mason Darveaux
-* @date 10/25/2017
+* @date 12/08/2017
 **/
 
 #include <stdio.h>
@@ -31,7 +36,7 @@ CB_status status;		//define the circular buffer status structure
 
 void project3(void)
 {
-
+/* profile functions for host and BeagleBone Black profiling*/
 #if defined (PROFILEHOST) || defined (PROFILEBBB)
   printf("****Profile for 10 Bytes****\n");
   profile_All_BBB(10);
@@ -46,6 +51,8 @@ void project3(void)
   profile_All_BBB(5000);
 #endif
 
+  /*Code specific to KL25Z. See notes in Main for compile time flag and
+   * timer setup using IDE*/
 #ifdef PROFILEKL25Z
 	__enable_irq();  //enable global interrupts
 	NVIC_EnableIRQ(UART0_IRQn);    //enable uart0 interrupts

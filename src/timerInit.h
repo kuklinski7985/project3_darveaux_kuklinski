@@ -1,9 +1,8 @@
 /**
 * @file timerInit.h
-* @brief creating a UART interface in order to have a method of transmitting
-         and receiving data to development board
+* @brief function definitions for the initialization of the TPM0 timer
 * @author Andrew Kuklinski and Mason Darveaux
-* @date 10/25/2017
+* @date 12/08/2017
 **/
 #include <stdio.h>
 #include <stdint.h>

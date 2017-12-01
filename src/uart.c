@@ -2,7 +2,7 @@
 * @file uart.c
 * @brief defines uart operation and provides functions for uart operation and initialization
 * @author Andrew Kuklinski and Mason Darveaux
-* @date 10/25/2017
+* @date 12/08/2017
 **/
 
 #include <stdio.h>

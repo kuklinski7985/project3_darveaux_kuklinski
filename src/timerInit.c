@@ -1,8 +1,8 @@
 /**
-* @file uart.c
-* @brief defines uart operation and provides functions for uart operation and initialization
+* @file timerInit.c
+* @brief initializes the TMP0 timer using the system clock
 * @author Andrew Kuklinski and Mason Darveaux
-* @date 10/25/2017
+* @date 12/08/2017
 **/
 
 #include <stdio.h>
@@ -37,18 +37,18 @@ void myTPM_init()
 	TPM0->SC |= TPM_SC_TOIE_MASK;
 
 	//setting counter to input capture MSB:MSA = 0b00
-	TPM0_C0SC &= (TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
+	//TPM0_C0SC &= (TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
 
 	//setting the input capture (MS0B:MS0A) to count on the rising edge
 	//ELSB:ELSA = 0b01
-	TPM0_C0SC &= TPM_CnSC_ELSB_MASK;
-	TPM0_C0SC |= TPM_CnSC_ELSA_MASK;
+	//TPM0_C0SC &= TPM_CnSC_ELSB_MASK;
+	//TPM0_C0SC |= TPM_CnSC_ELSA_MASK;
 
 	//enable channel interrupts
-	TPM0_C0SC |= TPM_CnSC_CHIE_MASK;
+	//TPM0_C0SC |= TPM_CnSC_CHIE_MASK;
 
 	//enable DMA
-	TPM0_C0SC |= TPM_CnSC_DMA_MASK;
+	//TPM0_C0SC |= TPM_CnSC_DMA_MASK;
 
 	return;
 }

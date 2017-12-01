@@ -25,6 +25,7 @@ extern uint8_t dump_flag;      //define a flag to determine when to transmit dat
  * 3. verify that system_MKL25Z4.h has the following to make UART operate:
  *     a. #define CLOCK_SETUP 1
  *     b. value for SYSTEM_MCG_C5_VALUE 0x41u and not 0x01u
+ *     c. #define SYSTEM_SIM_SOPT2_VALUE should equal 0x04010000U not 0x01010000U
  * */
 
 int main()

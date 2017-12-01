@@ -1,8 +1,9 @@
 /**
 * @file profilingFxn.h
-* @brief creating profiling fxns for standard library and self created fuxns, with and without DMA and optimization
+* @brief creating profiling fxns for standard library and self created fuxns,
+* with and without DMA and optimization
 * @author Andrew Kuklinski and Mason Darveaux
-* @date 10/25/2017
+* @date 12/08/2017
 **/
 #include <stdio.h>
 #include <stdint.h>
@@ -12,18 +13,18 @@
 
 
 /**
- *@brief prints profiling times for standard library memmove
+ *@brief prints profiling times for all memmove and memset versions for KL25Z
  *
- *@param none
+ *@param bytesMoved: accepts number of bytes to move in profile test
  *
  *@return VOID
  */
 void profile_All_KL25Z(uint16_t bytesMoved);
 
 /**
- *@brief
+ *@brief  prints profiling teims for all memmove and memset version for host and BBB
  *
- *@param none
+ *@param bytesMoved: accepts number of bytes to move in profile test
  *
  *@return VOID
  */
@@ -32,9 +33,9 @@ void profile_All_BBB(uint16_t bytesMoved);
 /**
  *@brief
  *
- *@param none
+ *@param length: accepts a value to test the length
  *
- *@return VOID
+ *@return number of digits the value length contains
  */
 uint32_t getValueLength(uint16_t length);
 

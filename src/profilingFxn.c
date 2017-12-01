@@ -1,8 +1,10 @@
 /**
-* @file uart.c
-* @brief defines uart operation and provides functions for uart operation and initialization
+* @file profilingFxn.c
+* @brief defines functions to profile standard library versions, non-DMA,
+* non-DMA optimized using -o3 and DMA versions of memmove and memzero/memset.
+* Setting compile time flags will choose the target specific code
 * @author Andrew Kuklinski and Mason Darveaux
-* @date 10/25/2017
+* @date 12/08/2017
 **/
 
 #include <stdio.h>
@@ -23,7 +25,7 @@
 
 
 #if defined (PROFILEHOST) || defined (PROFILEBBB)
-void profile_All_BBB(uint16_t bytesMoved)
+void profile_All_BBB(uint16_t bytesMoved)  //code for host and BBB
 {
 	/*information on gettimeofday usage was obtained from
 	   *man7.org/linux/man-pages/man2/gettimeofday.2.html
@@ -33,10 +35,11 @@ void profile_All_BBB(uint16_t bytesMoved)
 	   *gettimeofday(struct timeval *tv, struct timezone *tz)
 	   *#INCLUDE <time.h> and <sys/time.h>
 	*/
-	  uint8_t dst[bytesMoved];
+
+	  uint8_t dst[bytesMoved];  //creates destination space on stack
 
 	  uint8_t *srcPtr;
-	  srcPtr = (uint8_t*) malloc((sizeof(size_t))*bytesMoved);
+	  srcPtr = (uint8_t*) malloc((sizeof(size_t))*bytesMoved);  //creates source space on heap
 	  if (srcPtr == NULL)
 	  {
 	    printf("src malloc failed\n");
@@ -50,7 +53,7 @@ void profile_All_BBB(uint16_t bytesMoved)
 		  totaltime = 0;
 		  if(i == 0)
 		  {
-			  gettimeofday(&start,NULL);
+			  gettimeofday(&start,NULL);  //uses time.h functions to get seconds and usec
 			  memmove(dst,srcPtr,bytesMoved);
 			  gettimeofday(&end,NULL);
 			  totaltime = (end.tv_sec-start.tv_sec) +
@@ -112,7 +115,7 @@ void profile_All_BBB(uint16_t bytesMoved)
 }
 #endif
 
-#ifdef PROFILEKL25Z
+#ifdef PROFILEKL25Z  //code for KL25Z
 void profile_All_KL25Z(uint16_t bytesMoved)
 {
 
