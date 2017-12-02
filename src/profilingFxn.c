@@ -254,10 +254,10 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 	return;
 }
 
-uint32_t getValueLength(uint16_t length)
+uint32_t getValueLength(uint32_t length)
 {
 	uint32_t valueLength = 0;
-	if (length <10)
+	/*if (length <10)
 	{
 		valueLength =1;  			// count value is a single ascii character
 	}
@@ -265,21 +265,26 @@ uint32_t getValueLength(uint16_t length)
 	{
 		valueLength =2; 		//count value is 2 ascii characters
 	}
-	else if (100 <=length && length <999)
+	else if (100 <=length && length <1000)
 	{
 		valueLength =3;  	//count value is 3 ascii characters
 	}
-	else if (1000 <=length && length <9999)
+	else if (1000 <=length && length <10000)
 	{
 		valueLength =4; 		//count value is 4 ascii characters
 	}
-	else if (10000 <=length && length <99999)
+	else if (10000 <=length && length <100000)
 	{
 		valueLength =5; 		//count value is 5 ascii characters
 	}
-	else if (100000 <=length && length <999999)
+	else if (100000 <=length && length <1000000)
 	{
 		valueLength =6; 		//count value is 6 ascii characters
+	}*/
+	while (length != 0)
+	{
+		valueLength++;
+		length /= 10;
 	}
 
 	return valueLength;

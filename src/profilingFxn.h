@@ -37,6 +37,7 @@ void profile_All_BBB(uint16_t bytesMoved);
  *
  *@return number of digits the value length contains
  */
-uint32_t getValueLength(uint16_t length);
+uint32_t getValueLength(uint32_t length);
+
 
 #endif /*__profilingFxn_h_*/

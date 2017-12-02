@@ -78,9 +78,6 @@ void project3(void)
 	UART_send_n(testOut,testOutLength);  //Sending "UART Connection established"
 	UART_send(&CR);
 
-	log_integer(523);
-	UART_send(&CR);
-
 	myTPM_init();
 	uint8_t tenBytes[] = "********testing 10 bytes*********";
 	UART_send_n(tenBytes,testOutLength);
