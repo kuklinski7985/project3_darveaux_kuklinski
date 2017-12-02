@@ -29,6 +29,7 @@
 #include "conversion.h"
 #include "memory.h"
 #include "profilingFxn.h"
+#include "binaryLogger.h"
 
 CB_t * userbuff;        // define a pointer to our circular buffer structure
 uint8_t bufferSize = 16;           //sets circular buffer size
@@ -66,6 +67,8 @@ void project3(void)
 	status = CB_init(userbuff,bufferSize);    // initialize the circular buffer
 	UART_configure();                //configures the UART
 
+
+
 	/******Messages For UART*******/
 	uint8_t CR = 0x0d;  			  // carriage return ascii code
 	uint8_t testOut[]= "***UART connection established***";
@@ -73,6 +76,9 @@ void project3(void)
 	/*****************************/
 
 	UART_send_n(testOut,testOutLength);  //Sending "UART Connection established"
+	UART_send(&CR);
+
+	log_integer(523);
 	UART_send(&CR);
 
 	myTPM_init();

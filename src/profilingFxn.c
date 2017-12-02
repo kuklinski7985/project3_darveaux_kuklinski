@@ -79,8 +79,8 @@ void profile_All_BBB(uint16_t bytesMoved)  //code for host and BBB
 			  printf("DMA my_memmove | total time: %d\n",totaltime);}
 		  if(i == 3)
 		  {
-		          gettimeofday(&start,NULL);
-		          memset(srcPtr,'z',bytesMoved);	//function to be tested
+		      gettimeofday(&start,NULL);
+		      memset(srcPtr,'z',bytesMoved);	//function to be tested
 			  gettimeofday(&end,NULL);
 			  totaltime = (end.tv_sec-start.tv_sec) +
 					  (end.tv_usec - start.tv_usec);
@@ -90,7 +90,7 @@ void profile_All_BBB(uint16_t bytesMoved)  //code for host and BBB
 		  if(i == 4)
 		  {
 			  gettimeofday(&start,NULL);
-                          my_memset(srcPtr,bytesMoved,'z');
+              my_memset(srcPtr,bytesMoved,'z');
 			  gettimeofday(&end,NULL);
 			  totaltime = (end.tv_sec-start.tv_sec) +
 					  (end.tv_usec - start.tv_usec);

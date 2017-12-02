@@ -11,6 +11,7 @@
 #endif
 
 #include "project3.h"
+#include "binaryLogger.h"
 
 
 extern CB_t * userbuff;        //define a pointer to our circular buffer structure
@@ -22,6 +23,7 @@ extern uint8_t dump_flag;      //define a flag to determine when to transmit dat
 
 /* 1. when using kinetis IDE, you will have to add the -DPROJECT3 and -DPROFILEKL25Z tags to the complier
  * 2. you will also have to increase the size of the heap to as least 0x3500
+ * 	   a. -Xlinker --defsym=__heap_size__=0x3500
  * 3. verify that system_MKL25Z4.h has the following to make UART operate:
  *     a. #define CLOCK_SETUP 1
  *     b. value for SYSTEM_MCG_C5_VALUE 0x41u and not 0x01u
