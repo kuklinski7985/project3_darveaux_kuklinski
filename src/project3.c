@@ -31,9 +31,15 @@
 #include "profilingFxn.h"
 #include "binaryLogger.h"
 
-CB_t * userbuff;        // define a pointer to our circular buffer structure
-uint8_t bufferSize = 16;           //sets circular buffer size
-CB_status status;		//define the circular buffer status structure
+CB_t * userbuff;        // define a pointer to our circular buffer structure, used in the UART
+uint8_t bufferSizeUART = 16;           //sets circular buffer size
+CB_status statusUART;		//define the circular buffer status structure
+CB_status statusLogger;		//status enum for logger buffer
+
+CB_t * loggerBuffer;		//circular buffer for logger output
+uint8_t bufferSizeLogger = 128;  //should be big enough to contain an entire binlogger_t struct
+
+
 
 void project3(void)
 {
@@ -64,10 +70,16 @@ void project3(void)
 	{
 		return;
 	}
-	status = CB_init(userbuff,bufferSize);    // initialize the circular buffer
+
+	loggerBuffer = (CB_t*)malloc(sizeof(CB_t));
+	if(loggerBuffer == NULL)
+	{
+		return;
+	}
+
+	statusUART = CB_init(userbuff,bufferSizeUART);    // initialize the circular buffer
+	statusLogger = CB_init(loggerBuffer,bufferSizeLogger);
 	UART_configure();                //configures the UART
-
-
 
 	/******Messages For UART*******/
 	uint8_t CR = 0x0d;  			  // carriage return ascii code
@@ -98,6 +110,9 @@ void project3(void)
 	UART_send_n(fiveKBytes,testOutLength);
 	UART_send(&CR);
 	profile_All_KL25Z(5000);
+
+	logger_init_all();
+	for(;;);
 
 #endif
 	return;

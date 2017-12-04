@@ -55,20 +55,56 @@ void log_flush(CB_t * circBuff)
 	return;
 }
 
-void log_item(binLogger_t * userLogger, uint32_t logLength)
+void log_item(binLogger_t * logStruct)
 {
 
+	//log_string(logger_init0->payload);
 	return;
 }
 
-void loggerEvent_init(binLogger_t * inputEvent)
+void loggerEvent_init(binLogger_t * inputEvent,
+		logger_status logEvent, uint8_t inputlogLength, char* inputpayload)
 {
-	inputEvent->logID = LOGGER_INIT;
-	inputEvent->RTCtimeStamp = 34;
-	inputEvent->logLength = 32;
-	inputEvent->payload = 5;
-	inputEvent->checkSum = 9;
+	inputEvent->logID = logEvent;
+	inputEvent->RTCtimeStamp = 0;
+	inputEvent->logLength = inputlogLength;
+	inputEvent->payload = inputpayload;
+	inputEvent->checkSum = 0;
 	return;
+}
+
+void logger_init_all()
+{
+	logger_init0 = (binLogger_t*) malloc(sizeof(binLogger_t));
+	if(logger_init0 == NULL)
+	{
+		return;
+	}
+	loggerEvent_init(logger_init0, LOGGER_INIT, 32, "logger initialized");
+	return;
+}
+uint32_t checksumOnesCount(binLogger_t inputEvent)
+{
+	/*uint8_t x = 0;
+	uint8_t addedValue;
+	uint32_t checkSumValue = 0;
+
+	for(x=0; x < ((sizeof(inputEvent))*8); x++)
+	{
+		addedValue = inputEvent & 0x1;
+		if(addedValue == 1)
+		{
+			checkSumValue++;
+			inputEvent<<1;
+		}
+		else
+		{
+			inputEvent<<1;
+		}
+	}
+
+	return checkSumValue;*/
+	return 0;
 }
 
 

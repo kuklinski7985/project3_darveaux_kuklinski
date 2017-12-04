@@ -136,7 +136,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 
 	/*using an array in order to utilize both the heap and the stack when
 	 * number of bytes that need to be moved gets high
-	 * used of the array is for the stack*/
+	 * use of the array is for the stack*/
 	uint8_t dst[bytesMoved];
 
 	/*used malloc to utilize the heap*/
