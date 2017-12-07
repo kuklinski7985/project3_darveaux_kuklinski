@@ -157,12 +157,12 @@ void project3(void)
 	UART_send(&CR);
 	profile_All_KL25Z(5000);*/
 
-	uint8_t payloadStr[] =  "Logger initialized";
-	logger_init_ptr->logID = LOGGER_INIT;
+	uint8_t payloadStr[] =  "new test";
+	logger_init_ptr->logID = DATA_ANALYSIS_COMPLETE;
 	logger_init_ptr->payload = payloadStr;
 	logger_init_ptr->logLength = strlen((char*)logger_init_ptr->payload);
-	logger_init_ptr->RTCtimeStamp = 0x12345678;  //need a function
-	logger_init_ptr->checkSum = 0x87654321;  //need function
+	logger_init_ptr->RTCtimeStamp = 60606060;  //need a function
+	logger_init_ptr->checkSum = 45689;  //need function
 
 	LOG_ITEM(logger_init_ptr,loggerBuffer);
 
