@@ -17,6 +17,8 @@
 #include "binaryLogger.h"
 #include "loggerQueue.h"
 
+void eventToBuffer(CB_t * buff, uint8_t data)
+{
 
-
-
+	return;
+}

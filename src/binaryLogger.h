@@ -26,30 +26,11 @@ typedef enum{
 
 typedef struct{
 	uint32_t checkSum;		//using 1's counter
-	logger_status logID;	//log indicator, enum value
 	uint32_t RTCtimeStamp;	//32-bit value
+	uint8_t logID;			//log indicator, enum value
 	uint8_t logLength;		//number of bytes in payload
-	char * payload;		//data sent for output
+	uint8_t * payload;		//data sent for output
 }binLogger_t;
-
-binLogger_t * logger_init0;
-binLogger_t * gpio_init;
-binLogger_t * system_init;
-binLogger_t * system_halted;
-binLogger_t * info;
-binLogger_t * warning;
-binLogger_t * error;
-binLogger_t * profiling_started;
-binLogger_t * profiling_result;
-binLogger_t * profiling_completed;
-binLogger_t * data_received;
-binLogger_t * data_analysis_started;
-binLogger_t * data_alpha_count;
-binLogger_t * data_num_count;
-binLogger_t * data_punt_count;
-binLogger_t * data_misc_count;
-binLogger_t * data_analysis_complete;
-binLogger_t * heartbeat;
 
 /**
  *@brief UART transmit wrap function
@@ -85,17 +66,7 @@ void log_integer(uint32_t integerInput);
  *
  *@return VOID
  */
-void log_flush(CB_t * circBuff);
-
-/**
- *@brief
- *
- *@param
- *
- *@return VOID
- */
-void loggerEvent_init(binLogger_t * inputEvent,
-		logger_status logEvent, uint8_t inputlogLength, char* inputpayload);
+CB_status log_flush(CB_t * circBuff);
 
 /**
  *@brief calculate ones count of binLogger_t struct type
@@ -105,26 +76,7 @@ void loggerEvent_init(binLogger_t * inputEvent,
  *
  *@return checksum value, number of ones struct
  */
-uint32_t checksumOnesCount(binLogger_t inputEvent);
+void log_item_KL25Z(binLogger_t * inputEvent, CB_t *loggerBuffer);
 
-/**
- *@brief calculate ones count of binLogger_t struct type
- *@brief must be run after struct initialization
- *
- *@param binLogger_t type struct
- *
- *@return checksum value, number of ones struct
- */
-void logger_init_all();
-
-/**
- *@brief calculate ones count of binLogger_t struct type
- *@brief must be run after struct initialization
- *
- *@param binLogger_t type struct
- *
- *@return checksum value, number of ones struct
- */
-void log_item(binLogger_t * logStruct);
 
 #endif /*binaryLogger_h_*/

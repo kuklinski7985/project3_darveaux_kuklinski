@@ -24,6 +24,11 @@
  #include "MKL25Z4.h"
  #include "uart.h"
  #include "timerInit.h"
+ #define LOG_ITEM(data,buffer) log_item_KL25Z(data,buffer)
+#endif
+
+#if defined (PROFILEHOST) || defined (PROFILEBBB)
+ #define LOG_ITEM(data,buffer) log_item_BBBHOST(data,buffer)
 #endif
 
 #include "conversion.h"
@@ -38,6 +43,47 @@ CB_status statusLogger;		//status enum for logger buffer
 
 CB_t * loggerBuffer;		//circular buffer for logger output
 uint8_t bufferSizeLogger = 128;  //should be big enough to contain an entire binlogger_t struct
+
+
+binLogger_t logger_init;
+binLogger_t gpio_init;
+binLogger_t system_init;
+binLogger_t system_halted;
+binLogger_t info;
+binLogger_t warning;
+binLogger_t error;
+binLogger_t profiling_started;
+binLogger_t profiling_result;
+binLogger_t profiling_completed;
+binLogger_t data_received;
+binLogger_t data_analysis_started;
+binLogger_t data_alpha_count;
+binLogger_t data_num_count;
+binLogger_t data_punt_count;
+binLogger_t data_misc_count;
+binLogger_t data_analysis_complete;
+binLogger_t heartbeat;
+
+/*creating logging event structures for all events*/
+binLogger_t * logger_init_ptr = &logger_init;
+binLogger_t * gpio_init_ptr = &gpio_init;
+binLogger_t * system_init_ptr = &system_init;
+binLogger_t * system_halted_ptr = &system_halted;
+binLogger_t * info_ptr = &info;
+binLogger_t * warning_ptr = &warning;
+binLogger_t * error_ptr = &error;
+binLogger_t * profiling_started_ptr = &profiling_started;
+binLogger_t * profiling_result_ptr = &profiling_result;
+binLogger_t * profiling_completed_ptr = &profiling_completed;
+binLogger_t * data_received_ptr = &data_received;
+binLogger_t * data_analysis_started_ptr = &data_analysis_started;
+binLogger_t * data_alpha_count_ptr = &data_alpha_count ;
+binLogger_t * data_num_count_ptr = &data_num_count;
+binLogger_t * data_punt_count_ptr = &data_punt_count;
+binLogger_t * data_misc_count_ptr = &data_misc_count;
+binLogger_t * data_analysis_complete_ptr = &data_analysis_complete;
+binLogger_t * heartbeat_ptr = &heartbeat;
+
 
 
 
@@ -82,15 +128,15 @@ void project3(void)
 	UART_configure();                //configures the UART
 
 	/******Messages For UART*******/
-	uint8_t CR = 0x0d;  			  // carriage return ascii code
-	uint8_t testOut[]= "***UART connection established***";
-	uint8_t testOutLength =33;
+	//uint8_t CR = 0x0d;  			  // carriage return ascii code
+	//uint8_t testOut[]= "***UART connection established***";
+	//uint8_t testOutLength =33;
 	/*****************************/
 
-	UART_send_n(testOut,testOutLength);  //Sending "UART Connection established"
-	UART_send(&CR);
+	//UART_send_n(testOut,testOutLength);  //Sending "UART Connection established"
+	//UART_send(&CR);
 
-	myTPM_init();
+	/*myTPM_init();
 	uint8_t tenBytes[] = "********testing 10 bytes*********";
 	UART_send_n(tenBytes,testOutLength);
 	UART_send(&CR);
@@ -109,9 +155,18 @@ void project3(void)
 	uint8_t fiveKBytes[] = "********testing 5000 bytes*******";
 	UART_send_n(fiveKBytes,testOutLength);
 	UART_send(&CR);
-	profile_All_KL25Z(5000);
+	profile_All_KL25Z(5000);*/
 
-	logger_init_all();
+	uint8_t payloadStr[] =  "Logger initialized";
+	logger_init_ptr->logID = LOGGER_INIT;
+	logger_init_ptr->payload = payloadStr;
+	logger_init_ptr->logLength = strlen((char*)logger_init_ptr->payload);
+	logger_init_ptr->RTCtimeStamp = 0x12345678;  //need a function
+	logger_init_ptr->checkSum = 0x87654321;  //need function
+
+	LOG_ITEM(logger_init_ptr,loggerBuffer);
+
+
 	for(;;);
 
 #endif
