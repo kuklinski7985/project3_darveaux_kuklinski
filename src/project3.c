@@ -34,6 +34,7 @@
 #include "SPI.h"
 #include "gpio.h"
 #include "rtc.h"
+#include "project2counting.h"
 
 
 
@@ -107,9 +108,14 @@ void project3(void)
    * timer setup using IDE*/
 #ifdef PROFILEKL25Z
 
-  	  SPI_init();
-  	  GPIO_nrf_init();
-  	  rtc_init();
+	UART_configure();                //configures the UART
+  	rtc_init();
+  	GPIO_nrf_init();
+
+  	uint8_t nullPayload[] = "";
+  	logOutputData(gpio_init_ptr, nullPayload, GPIO_INIT);
+  	LOG_ITEM(gpio_init_ptr,loggerBuffer);
+
 	__enable_irq();  //enable global interrupts
 	NVIC_EnableIRQ(UART0_IRQn);    //enable uart0 interrupts
 	NVIC_EnableIRQ(TPM0_IRQn);
@@ -128,11 +134,18 @@ void project3(void)
 
 	statusUART = CB_init(userbuff,bufferSizeUART);    // initialize the circular buffer
 	statusLogger = CB_init(loggerBuffer,bufferSizeLogger);
-	UART_configure();                //configures the UART
+
+  	logOutputData(logger_init_ptr, nullPayload, LOGGER_INIT);
+  	LOG_ITEM(logger_init_ptr,loggerBuffer);
+
+  	SPI_init();
 
 	DMA_init();
 
 	myTPM_init();
+
+  	logOutputData(system_init_ptr, nullPayload, SYSTEM_INIT);
+  	LOG_ITEM(system_init_ptr,loggerBuffer);
 
 	profile_All_KL25Z(10);
 
@@ -153,8 +166,20 @@ void project3(void)
 	//LOG_ITEM(logger_init_ptr,loggerBuffer);
 	LOG_ITEM(logger_init_ptr,loggerBuffer);*/
 
+	uint8_t payloadStr[] = "testing, something longer than 1 digit";
+	logOutputData(logger_init_ptr, payloadStr, PROFILING_STARTED);
+	LOG_ITEM(logger_init_ptr,loggerBuffer);
 
-	for(;;);
+
+	for(;;)
+	{
+		  if (dump_flag==1)  // check to see if buffer has been filled and statistics should be transmitted
+		  {
+			  dump_flag=0;
+			  process_Data(); // function to analyze received data
+
+		  }
+	}
 
 #endif
 	return;

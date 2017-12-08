@@ -77,7 +77,8 @@ void profile_All_BBB(uint16_t bytesMoved)  //code for host and BBB
 		  if(i == 2)
 		  {
 		  	  gettimeofday(&start,NULL);
-			  //put function call to DMA_my_memmove		  
+			  //put function call to DMA_my_memmove
+		  	  memmove_dma(srcPtr,dst,bytesMoved);
 			  gettimeofday(&end,NULL);
 			  totaltime = (end.tv_sec-start.tv_sec) +
 					  (end.tv_usec - start.tv_usec);
@@ -124,15 +125,36 @@ void profile_All_BBB(uint16_t bytesMoved)  //code for host and BBB
 void profile_All_KL25Z(uint16_t bytesMoved)
 {
 
+	uint8_t infoBytesMoved[] = "bytes to be moved (next line for number): ";
+	logOutputData(info_ptr, infoBytesMoved, INFO);
+	LOG_ITEM(profiling_started_ptr,loggerBuffer);
+
+	uint16_t bytesMovedpayload[6] = {0};
+	uint8_t * bytesPayloadPtr;
+	bytesPayloadPtr = my_itoa(bytesMoved, bytesMovedpayload, 10);			//converts values to ASCII
+	logOutputData(info_ptr, bytesPayloadPtr, INFO);
+	LOG_ITEM(info_ptr,loggerBuffer);
+
 	uint8_t failedMessage[] = "Malloc failed!";
 	uint8_t failedLength = 14;
-	uint8_t arrayTicks[5] = {0};
+	uint8_t arrayTicks[6] = {0};
 	uint8_t * ticksPtr;
 	uint32_t valueLength = 0;
 	uint16_t startVal = 0;
 	uint16_t endVal = 0;
 	uint16_t totalTime = 0;
 	uint8_t CR = 0x0d;
+
+	uint8_t profilStartpayload[] = "profiling analysis started";
+	uint8_t profilingResultpayload1[] = "profile result memmove next line";
+	uint8_t profilingResultpayload2[] = "profile result my_memmove next line";
+	uint8_t profilingResultpayload3[] = "profile result memmove_dma next line";
+	uint8_t profilingResultpayload4[] = "profile result memset next line";
+	uint8_t profilingResultpayload5[] = "profile result my_memset next line";
+	uint8_t profilingResultpayload6[] = "profile result memset_dma next line";
+	uint8_t *profileResultPtr;
+
+
 
 	/***************************************************************
 	 * use bytesMoved to change the the number of bytes to be tested
@@ -161,7 +183,10 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
-			//uint8_t payloadArray[] = "profiling started";
+
+			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
+			LOG_ITEM(profiling_started_ptr,loggerBuffer);
+
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
 			memmove(dst,srcPtr,bytesMoved);	//function to be tested
@@ -169,8 +194,12 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			TPM0->SC |= TPM_SC_CMOD(0b00);		//turns off the counter
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
-			uint8_t messageOut[] = "Profile memmove        | # ticks: ";
-			UART_send_n(messageOut,messageOutLength);
+
+			logOutputData(profiling_result_ptr, profilingResultpayload1, PROFILING_RESULT);
+			LOG_ITEM(profiling_result_ptr,loggerBuffer);
+
+			//uint8_t messageOut[] = "Profile memmove        | # ticks: ";
+			//UART_send_n(messageOut,messageOutLength);
 			free(srcPtr);
 		}
 
@@ -178,6 +207,8 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
+			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
+			LOG_ITEM(profiling_started_ptr,loggerBuffer);
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
 			my_memmove(dst,srcPtr,bytesMoved);	//function to be tested
@@ -185,8 +216,11 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			TPM0->SC |= TPM_SC_CMOD(0b00);		//turns off the counter
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
-			uint8_t messageOut[] = "Profile my_memmove     | # ticks: ";
-			UART_send_n(messageOut,messageOutLength);
+
+			logOutputData(profiling_result_ptr, profilingResultpayload2, PROFILING_RESULT);
+			LOG_ITEM(profiling_result_ptr,loggerBuffer);
+			//uint8_t messageOut[] = "Profile my_memmove     | # ticks: ";
+			//UART_send_n(messageOut,messageOutLength);
 			free(srcPtr);
 		}
 
@@ -195,6 +229,8 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
+			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
+			LOG_ITEM(profiling_started_ptr,loggerBuffer);
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
 			memmove_dma(srcPtr,dst,bytesMoved);
@@ -202,8 +238,11 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			TPM0->SC |= TPM_SC_CMOD(0b00);		//turns off the counter
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
-			uint8_t messageOut[] = "Profile DMA_my_memmove | # ticks: ";
-			UART_send_n(messageOut,messageOutLength);
+			logOutputData(profiling_result_ptr, profilingResultpayload3, PROFILING_RESULT);
+			LOG_ITEM(profiling_result_ptr,loggerBuffer);
+
+			//uint8_t messageOut[] = "Profile DMA_my_memmove | # ticks: ";
+			//UART_send_n(messageOut,messageOutLength);
 			free(srcPtr);
 		}
 
@@ -212,6 +251,8 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
+			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
+			LOG_ITEM(profiling_started_ptr,loggerBuffer);
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
 			memset(srcPtr,'z',bytesMoved);	//function to be tested
@@ -219,8 +260,11 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			TPM0->SC |= TPM_SC_CMOD(0b00);		//turns off the counter
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
-			uint8_t messageOut[] = "Profile memset         | # ticks: ";
-			UART_send_n(messageOut,messageOutLength);
+
+			logOutputData(profiling_result_ptr, profilingResultpayload4, PROFILING_RESULT);
+			LOG_ITEM(profiling_result_ptr,loggerBuffer);
+			//uint8_t messageOut[] = "Profile memset         | # ticks: ";
+			//UART_send_n(messageOut,messageOutLength);
 			free(srcPtr);
 		}
 
@@ -228,6 +272,8 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
+			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
+			LOG_ITEM(profiling_started_ptr,loggerBuffer);
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
 			my_memset(srcPtr,bytesMoved,'z');	//function to be tested
@@ -235,8 +281,12 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			TPM0->SC |= TPM_SC_CMOD(0b00);		//turns off the counter
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
-			uint8_t messageOut[] = "Profile my_memset      | # ticks: ";
-			UART_send_n(messageOut,messageOutLength);
+
+			logOutputData(profiling_result_ptr, profilingResultpayload5, PROFILING_RESULT);
+			LOG_ITEM(profiling_result_ptr,loggerBuffer);
+
+			//uint8_t messageOut[] = "Profile my_memset      | # ticks: ";
+			//UART_send_n(messageOut,messageOutLength);
 			free(srcPtr);
 		}
 
@@ -252,6 +302,8 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 >>>>>>> 4ceaf9554fd1daef6a5723b444514e16a2691c85
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
+			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
+			LOG_ITEM(profiling_started_ptr,loggerBuffer);
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
 
@@ -268,16 +320,23 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 
 			totalTime = endVal - startVal;		//getting execution time
-			uint8_t messageOut[] = "Profile DMA_my_memset  | # ticks: ";
-			UART_send_n(messageOut,messageOutLength);
-			free(srcPtr);*/
+
+			logOutputData(profiling_result_ptr, profilingResultpayload6, PROFILING_RESULT);
+			LOG_ITEM(profiling_result_ptr,loggerBuffer);
+			//uint8_t messageOut[] = "Profile DMA_my_memset  | # ticks: ";
+			//UART_send_n(messageOut,messageOutLength);
+			free(srcPtr);
 		}
 */
 
 		ticksPtr = my_itoa(totalTime, arrayTicks, 10);			//converts values to ASCII
-		valueLength = getValueLength(totalTime);
-		UART_send_n(ticksPtr, valueLength);						//sends message
-		UART_send(&CR);  										//send a carriage return
+		//valueLength = getValueLength(totalTime);
+		//UART_send_n(ticksPtr, valueLength);						//sends message
+		//UART_send(&CR);  										//send a carriage return
+
+		logOutputData(info_ptr, ticksPtr, INFO);
+		LOG_ITEM(info_ptr,loggerBuffer);
+
 	}
 	return;
 }

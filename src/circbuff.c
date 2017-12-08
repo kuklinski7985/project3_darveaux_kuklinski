@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "circbuff.h"
+#include "core_cm0plus.h"
 
 
 CB_status CB_buffer_add_item(CB_t * buff, uint8_t data)
