@@ -231,6 +231,6 @@ void DMA_init()
 
 void DMA0_IRQHandler()
 {
-	transfer_cnt++;
+	//transfer_cnt++;
 }
 
