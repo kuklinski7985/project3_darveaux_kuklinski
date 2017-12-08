@@ -15,14 +15,18 @@
 #include "profilingFxn.h"
 #include "circbuff.h"
 #include "binaryLogger.h"
-
-binLogger_t logger_init;
-
+#include "loggerQueue.h"
 
 
 void log_data (uint8_t * data, uint8_t length)
 {
 	UART_send_n(data,length);
+	return;
+}
+
+void log_data_single(uint8_t * data)
+{
+	UART_send(data);
 	return;
 }
 
@@ -48,40 +52,49 @@ void log_integer(uint32_t integerInput)
 	return;
 }
 
-CB_status log_flush(CB_t * circBuff)
+CB_status log_flush(CB_t * inputBuffer)
 {
-	CB_status statusCheck = CB_is_empty(circBuff);
+	CB_status statusCheck = loggingBuffer_empty(inputBuffer);
 	while(statusCheck != buffer_empty)
 	{
-		statusCheck = CB_buffer_remove_item(circBuff, circBuff->poppedData);
+		statusCheck = loggerRemoveFromBuffer(inputBuffer, inputBuffer->poppedData);
 		if(statusCheck == buffer_empty)
 		{
 			return statusCheck;
 		}
-		UART_send(circBuff->poppedData);
+		#ifdef PROFILEKL25Z
+			UART_send(inputBuffer->poppedData);
+		#endif
+
+		#if defined (PROFILEHOST) || defined (PROFILEBBB)
+			printf("%c",inputBuffer->poppedData);
+		#endif
 	}
 	return statusCheck;
 }
 
-void log_item_KL25Z(binLogger_t * inputEvent, CB_t* logBuff)
+void log_item(binLogger_t * inputEvent, CB_t* logBuff)
 {
-	uint8_t spacer[] = " | ";
-	uint8_t spacerLength = 3;
-	uint8_t idPtr;
+	uint8_t idPtr[2] = {0};
+	uint8_t loglengthPtr[10] = {0};
 	uint16_t integerLength = 0;
 	uint8_t arrayASCIIRTC[10] = {0};
 	uint8_t arrayASCIIchecksum[10] = {0};
 
 	/*****************adding ID to buffer***********************/
-	my_itoa(inputEvent->logID, &idPtr,10);
-	CB_buffer_add_item(logBuff, idPtr);
+	my_itoa(inputEvent->logID, idPtr,10);
+	integerLength = getValueLength(inputEvent->logID);
 
+	for(uint8_t i=0; i<integerLength; i++)
+	{
+		loggerEventToBuffer(logBuff, idPtr[i]);
+	}
 
 	/*****************adding format spacer***********************/
-	for(uint8_t i=0; i<spacerLength; i++)
-	{
-		CB_buffer_add_item(logBuff, spacer[i]);
-	}
+
+	CB_buffer_add_item(logBuff, 0x20);		//adding a space
+	CB_buffer_add_item(logBuff, 0x7C);		//adding a bar
+	CB_buffer_add_item(logBuff, 0x20);		//adding a space
 
 	/*****************adding RTC timestamp to buffer*************/
 	my_itoa(inputEvent->RTCtimeStamp, arrayASCIIRTC, 10);
@@ -89,27 +102,39 @@ void log_item_KL25Z(binLogger_t * inputEvent, CB_t* logBuff)
 
 	for(uint8_t i=0; i<integerLength; i++)
 	{
-		CB_buffer_add_item(logBuff, arrayASCIIRTC[i]);
+		loggerEventToBuffer(logBuff, arrayASCIIRTC[i]);
 	}
 
 	/*****************adding format spacer***********************/
-	for(uint8_t i=0; i<spacerLength; i++)
+	loggerEventToBuffer(logBuff, 0x20);		//adding a space
+	loggerEventToBuffer(logBuff, 0x7C);		//adding a bar
+	loggerEventToBuffer(logBuff, 0x20);		//adding a space
+
+	/*****************adding log length to buffer****************/
+	my_itoa(inputEvent->logLength, loglengthPtr,10);
+	integerLength = getValueLength(inputEvent->logLength);
+
+	for(uint8_t i=0; i<integerLength; i++)
 	{
-		CB_buffer_add_item(logBuff, spacer[i]);
+		loggerEventToBuffer(logBuff, loglengthPtr[i]);
 	}
+
+	/*****************adding format spacer***********************/
+	CB_buffer_add_item(logBuff, 0x20);		//adding a space
+	CB_buffer_add_item(logBuff, 0x7C);		//adding a bar
+	CB_buffer_add_item(logBuff, 0x20);		//adding a space
 
 	/*****************adding payload to buffer*******************/
 	for(uint8_t i=0; i<inputEvent->logLength; i++)
 	{
-		CB_buffer_add_item(logBuff,*inputEvent->payload);
+		loggerEventToBuffer(logBuff,*inputEvent->payload);
 		inputEvent->payload++;
 	}
 
 	/*****************adding format spacer***********************/
-	for(uint8_t i=0; i<spacerLength; i++)
-	{
-		CB_buffer_add_item(logBuff, spacer[i]);
-	}
+	loggerEventToBuffer(logBuff, 0x20);		//adding a space
+	loggerEventToBuffer(logBuff, 0x7C);		//adding a bar
+	loggerEventToBuffer(logBuff, 0x20);		//adding a space
 
 	/*****************adding checksum to buffer******************/
 
@@ -119,10 +144,27 @@ void log_item_KL25Z(binLogger_t * inputEvent, CB_t* logBuff)
 
 	for(uint8_t i=0; i<integerLength; i++)
 	{
-		CB_buffer_add_item(logBuff, arrayASCIIchecksum[i]);
+		loggerEventToBuffer(logBuff, arrayASCIIchecksum[i]);
 	}
 
-	CB_buffer_add_item(logBuff,0x0d);
-	log_flush(logBuff);
+	loggerEventToBuffer(logBuff,0x0d);
+
+	log_flush(logBuff);		//outputs the entire buffer up this point
 	return;
 }
+
+void logOutputData(binLogger_t *logEvent, uint8_t * inputPayload,
+		logger_status enumStatus)
+{
+	logEvent->logID = enumStatus;
+	logEvent->payload = inputPayload;
+	logEvent->logLength = strlen((char*)logEvent->payload);
+	logEvent->RTCtimeStamp = 2;  //need a function
+
+	uint32_t checkSumValue = 0;
+	checkSumValue = (logEvent->logID) + (logEvent->RTCtimeStamp) +
+			(logEvent->logLength);
+	logEvent->checkSum = checkSumValue;
+	return;
+}
+

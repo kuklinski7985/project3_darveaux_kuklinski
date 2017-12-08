@@ -23,6 +23,10 @@
 #include <time.h>
 #include <sys/time.h>
 
+#include "binaryLogger.h"
+#include "circbuff.h"
+#include "loggerQueue.h"
+
 
 #if defined (PROFILEHOST) || defined (PROFILEBBB)
 void profile_All_BBB(uint16_t bytesMoved)  //code for host and BBB
@@ -147,14 +151,16 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		srcPtr = (uint8_t*)malloc((sizeof(uint8_t))*bytesMoved);
 		if (srcPtr == NULL)
 		{
-			UART_send_n(failedMessage,failedLength);
-			UART_send(&CR);
+			log_data(failedMessage,failedLength);
+			log_data_single(&CR);
+			return;
 		}
 
 		if(i == 0)
 		{
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
+			uint8_t payloadArray[] = "profiling started";
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
 			memmove(dst,srcPtr,bytesMoved);	//function to be tested
@@ -189,7 +195,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			startVal = TPM0->CNT;				//read start value of counter
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
-			//PUT DMA my_memmove FUNCTION CALL HERE
+			memmove_dma(srcPtr,dst,bytesMoved);
 
 			TPM0->SC |= TPM_SC_CMOD(0b00);		//turns off the counter
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
@@ -233,11 +239,14 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 
 		if(i==5)
 		{
+			uint8_t
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
 			//PUT DMA my_memset FUNCTION CALL HERE
+
+			memset_dma(srcPtr,bytesMoved,'z',dst);
 
 			TPM0->SC |= TPM_SC_CMOD(0b00);		//turns off the counter
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn

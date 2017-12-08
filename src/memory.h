@@ -57,6 +57,9 @@ void memmove_dma(uint8_t * src, uint8_t * dst, size_t length);
   all locations of that memory to a given value, uses DMA to perform the data transfer*/
 void memset_dma(uint8_t * src, size_t length, uint8_t value, uint8_t * dummy_address);
 
+
+void DMA_init();
+
 #endif
 
 #endif

@@ -8,15 +8,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "circbuff.h"
 
 #ifndef binaryLogger_h_
 #define binaryLogger_h_
 
-/*#define LOG_ITEM((binLogger_t * data), (CB_t * buffer)) ({#ifdef PROFILEKL25Z \
-		log_item(data,data->logLength);\
-		log_flush(buffer);\
-		#endif});
-*/
 typedef enum{
 	LOGGER_INIT, GPIO_INIT,SYSTEM_INIT, SYSTEM_HALTED,INFO,WARNING, ERROR,
 	PROFILING_STARTED, PROFILING_RESULT,PROFILING_COMPLETED, DATA_RECEIVED,
@@ -48,7 +44,10 @@ void log_data (uint8_t * data, uint8_t length);
  *
  *@return VOID
  */
-void log_string (uint8_t *input);
+
+void log_data_single(uint8_t * data);
+
+void log_string(uint8_t *input);
 
 /**
  *@brief accepts an integer and outputs to terminal over UART
@@ -66,7 +65,8 @@ void log_integer(uint32_t integerInput);
  *
  *@return VOID
  */
-CB_status log_flush(CB_t * circBuff);
+
+CB_status log_flush(CB_t * inputBuffer);
 
 /**
  *@brief calculate ones count of binLogger_t struct type
@@ -76,7 +76,12 @@ CB_status log_flush(CB_t * circBuff);
  *
  *@return checksum value, number of ones struct
  */
-void log_item_KL25Z(binLogger_t * inputEvent, CB_t *loggerBuffer);
+void log_item(binLogger_t * inputEvent, CB_t * logBuff);
+
+
+void logOutputData(binLogger_t *logEvent, uint8_t * inputPayload,
+		logger_status enumStatus);
+
 
 
 #endif /*binaryLogger_h_*/

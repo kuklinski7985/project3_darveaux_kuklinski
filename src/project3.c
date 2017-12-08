@@ -24,27 +24,25 @@
  #include "MKL25Z4.h"
  #include "uart.h"
  #include "timerInit.h"
- #define LOG_ITEM(data,buffer) log_item_KL25Z(data,buffer)
-#endif
-
-#if defined (PROFILEHOST) || defined (PROFILEBBB)
- #define LOG_ITEM(data,buffer) log_item_BBBHOST(data,buffer)
 #endif
 
 #include "conversion.h"
 #include "memory.h"
 #include "profilingFxn.h"
 #include "binaryLogger.h"
+#include "loggerQueue.h"
+
+#define LOG_ITEM(data,buffer) log_item(data,buffer)
 
 CB_t * userbuff;        // define a pointer to our circular buffer structure, used in the UART
 uint8_t bufferSizeUART = 16;           //sets circular buffer size
 CB_status statusUART;		//define the circular buffer status structure
-CB_status statusLogger;		//status enum for logger buffer
 
 CB_t * loggerBuffer;		//circular buffer for logger output
 uint8_t bufferSizeLogger = 128;  //should be big enough to contain an entire binlogger_t struct
+CB_status statusLogger;		//status enum for logger buffer
 
-
+/*creating logging event structures and pointers for all events*/
 binLogger_t logger_init;
 binLogger_t gpio_init;
 binLogger_t system_init;
@@ -64,7 +62,6 @@ binLogger_t data_misc_count;
 binLogger_t data_analysis_complete;
 binLogger_t heartbeat;
 
-/*creating logging event structures for all events*/
 binLogger_t * logger_init_ptr = &logger_init;
 binLogger_t * gpio_init_ptr = &gpio_init;
 binLogger_t * system_init_ptr = &system_init;
@@ -83,9 +80,6 @@ binLogger_t * data_punt_count_ptr = &data_punt_count;
 binLogger_t * data_misc_count_ptr = &data_misc_count;
 binLogger_t * data_analysis_complete_ptr = &data_analysis_complete;
 binLogger_t * heartbeat_ptr = &heartbeat;
-
-
-
 
 void project3(void)
 {
@@ -127,44 +121,28 @@ void project3(void)
 	statusLogger = CB_init(loggerBuffer,bufferSizeLogger);
 	UART_configure();                //configures the UART
 
-	/******Messages For UART*******/
-	//uint8_t CR = 0x0d;  			  // carriage return ascii code
-	//uint8_t testOut[]= "***UART connection established***";
-	//uint8_t testOutLength =33;
-	/*****************************/
+	DMA_init();
 
-	//UART_send_n(testOut,testOutLength);  //Sending "UART Connection established"
-	//UART_send(&CR);
+	myTPM_init();
 
-	/*myTPM_init();
-	uint8_t tenBytes[] = "********testing 10 bytes*********";
-	UART_send_n(tenBytes,testOutLength);
-	UART_send(&CR);
 	profile_All_KL25Z(10);
 
-	uint8_t hundredBytes[] = "********testing 100 bytes********";
-	UART_send_n(hundredBytes,testOutLength);
-	UART_send(&CR);
 	profile_All_KL25Z(100);
 
-	uint8_t thousandBytes[] = "********testing 1000 bytes*******";
-	UART_send_n(thousandBytes,testOutLength);
-	UART_send(&CR);
 	profile_All_KL25Z(1000);
 
-	uint8_t fiveKBytes[] = "********testing 5000 bytes*******";
-	UART_send_n(fiveKBytes,testOutLength);
-	UART_send(&CR);
-	profile_All_KL25Z(5000);*/
+	profile_All_KL25Z(5000);
 
-	uint8_t payloadStr[] =  "new test";
-	logger_init_ptr->logID = DATA_ANALYSIS_COMPLETE;
-	logger_init_ptr->payload = payloadStr;
-	logger_init_ptr->logLength = strlen((char*)logger_init_ptr->payload);
-	logger_init_ptr->RTCtimeStamp = 60606060;  //need a function
-	logger_init_ptr->checkSum = 45689;  //need function
+	/*
+	//uint8_t testVar = 't';
 
-	LOG_ITEM(logger_init_ptr,loggerBuffer);
+	//uint8_t payloadStr[] = {0};
+	uint8_t payloadStr[] = "testing, something longer than 1 digit";
+	//payloadStr[0] = testVar;
+	//my_itoa(testVar, &payloadStr[0], 10);
+	logOutputData(logger_init_ptr, payloadStr, PROFILING_STARTED);
+	//LOG_ITEM(logger_init_ptr,loggerBuffer);
+	LOG_ITEM(logger_init_ptr,loggerBuffer);*/
 
 
 	for(;;);

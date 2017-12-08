@@ -12,6 +12,7 @@
 
 #include "project3.h"
 #include "binaryLogger.h"
+#include "loggerQueue.h"
 
 
 extern CB_t * userbuff;        //define a pointer to our circular buffer structure

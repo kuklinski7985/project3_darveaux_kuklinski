@@ -13,6 +13,8 @@
 #include "memory.h"
 #include "MKL25Z4.h"
 
+uint8_t transfer_cnt = 0;
+
 int8_t * my_memset(uint8_t * src, size_t length, uint8_t value)
 {
 
@@ -204,7 +206,31 @@ void memset_dma(uint8_t * src, size_t length, uint8_t value, uint8_t * dummy_add
 
 	DMA_DCR0 |= DMA_DCR_START_MASK; // start the DMA transfer
 
+}
 
+void DMA_init()
+{
+	SIM->SCGC6 |= SIM_SCGC6_DMAMUX_MASK;  //enable clock signal to DMAMUX module
 
+	SIM->SCGC7 |= SIM_SCGC7_DMA_MASK; //enable clock signal to DMA module
+
+	DMAMUX0_CHCFG0 &= ~(DMAMUX_CHCFG_ENBL_MASK); //disable DMA MUX channel 0 in order to configure the DMA MUX channel
+	DMAMUX0_CHCFG0 &= ~(DMAMUX_CHCFG_TRIG_MASK); //disable the triggering function of DMA channel 0
+	DMAMUX0_CHCFG0 |= DMAMUX_CHCFG_SOURCE_MASK;  //configure DMA MUX source to be always enabled and use the DMA channel MUX to reactivate the channel after a transfer
+	DMAMUX0_CHCFG0 |= ~(DMAMUX_CHCFG_ENBL_MASK); //enable DMA MUX channel 0
+
+	DMA_DCR0 |= 0x20000;  // sets bit 17 of DCR equal to 1 in order to enable 8 bit destination transfers
+	DMA_DCR0 |= DMA_DCR_DINC_MASK;  // sets bit 19 of DCR equal to 1 in order to increment the DAR after a successful transfer
+	DMA_DCR0 |= 0x100000;  //sets bit 20 of the DCR equal to 1 in order to enable 8 bit source transfers
+	DMA_DCR0 |= DMA_DCR_SINC_MASK; // sets bit 22 of the DCR equal to 1 in order to increment the SAR after a successful transfer
+	DMA_DCR0 |= DMA_DCR_EINT_MASK; // sets bit 31 of the DCR equal to 1 in order to generate an interrupt after a complete transfer
+
+	NVIC_EnableIRQ(DMA0_IRQn);    //enable DMA0 interrupts
+
+}
+
+void DMA0_IRQHandler()
+{
+	transfer_cnt++;
 }
 
