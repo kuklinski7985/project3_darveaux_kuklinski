@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "memory.h"
+#include "MKL25Z4.h"
 
 int8_t * my_memset(uint8_t * src, size_t length, uint8_t value)
 {
@@ -169,3 +170,41 @@ void free_words(uint32_t * src)
   //frees memory previously allocated using malloc
   free(src);
 }
+
+void memmove_dma(uint8_t * src, uint8_t * dst, size_t length)
+{
+	uint32_t source_dummy = (uint32_t)src;
+	uint32_t destination_dummy =(uint32_t)dst;
+	DMA_SAR0 |= source_dummy;   // set the DMA0 SAR to hold the src address
+	DMA_DAR0 |= destination_dummy;   // set the DMA0 DAR to hold the dst address
+
+	DMA_DSR_BCR0 |= length; // set the DMA0 BCR register to hole the number of bytes to be transferred
+
+
+	DMA_DCR0 |= DMA_DCR_START_MASK; // start the DMA transfer
+
+}
+
+void memset_dma(uint8_t * src, size_t length, uint8_t value, uint8_t * dummy_address)
+{
+	uint16_t i;
+
+	for (i=0; i<length; i++)
+	{
+		*(dummy_address+i)=value;
+	}
+
+	uint32_t source_dummy = (uint32_t)dummy_address;
+	uint32_t destination_dummy = (uint32_t)src;
+
+	DMA_SAR0 |= source_dummy;   // set the DMA0 SAR to hold the address of the array of bytes to be written to the target locations
+	DMA_DAR0 |= destination_dummy;   // set the DMA0 DAR to hold the src address to be written to
+
+	DMA_DSR_BCR0 |= length; // set the DMA0 BCR register to hole the number of bytes to be transferred
+
+	DMA_DCR0 |= DMA_DCR_START_MASK; // start the DMA transfer
+
+
+
+}
+

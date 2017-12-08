@@ -13,6 +13,9 @@
 #ifndef memory_h_
 #define memory_h_
 
+#define ARCH_DMA
+#define TRANSFER_LENGTH 5000
+
 /*Takes in one source and one destination pointer and a length
   of bytes to copy from the sourcelocation to the deistination.
   Copy should occur with no data corruption*/
@@ -41,5 +44,19 @@ int32_t * reserve_words(size_t length);
 /*Takes a pointer to an allocated section of dynamic memory 
   and frees that section*/
 void free_words(uint32_t * src);
+
+
+#ifdef ARCH_DMA
+/*Takes in one source and one destination pointer and a length
+  of bytes to copy from the source location to the destination.
+  Copy should occur with no data corruption, uses DMA to perform the data transfer*/
+void memmove_dma(uint8_t * src, uint8_t * dst, size_t length);
+
+
+/*Takes a pointer to a source memory location and a length and sets
+  all locations of that memory to a given value, uses DMA to perform the data transfer*/
+void memset_dma(uint8_t * src, size_t length, uint8_t value, uint8_t * dummy_address);
+
+#endif
 
 #endif
