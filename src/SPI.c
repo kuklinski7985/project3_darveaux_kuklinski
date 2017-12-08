@@ -20,7 +20,7 @@ void SPI_init()
 
 	SPI0->C2 = 0x10; //sets bit 4, MODFEN =1 SS acts as a slave select output
 
-	SPI0->BR = 0x01; //sets SPI BAUD Rate divisor to 32, CLK input is 24MHZ, SPICLK should be 750 KHz
+	SPI0->BR = 0x01; //sets SPI BAUD Rate divisor to 4, CLK input is 24MHZ, SPICLK should be 6 MHz
 
 
 
