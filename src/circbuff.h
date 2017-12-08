@@ -8,9 +8,13 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include "core_cm0plus.h"
 
 #ifndef circularBuffer_h_
 #define circularBuffer_h_
+
+#define START_CRITICAL (__enable_irq())
+#define END_CRITICAL (__disable_irq())
 
 /*struct and emun are used to interact with and control the circular buffer*/
 typedef struct {
@@ -60,7 +64,7 @@ CB_status CB_buffer_remove_item(CB_t * buff, uint8_t * removedData);
  *@return status of buffer or an error code
 
  */
-CB_status CB_is_full(CB_t * buff);
+__STATIC_INLINE CB_status CB_is_full(CB_t * buff);
 
 
 /**
@@ -71,7 +75,7 @@ CB_status CB_is_full(CB_t * buff);
  *@return the status of the buffer or an error code
 
  */
-CB_status CB_is_empty(CB_t * buff);
+__STATIC_INLINE CB_status CB_is_empty(CB_t * buff);
 
 
 /**

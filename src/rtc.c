@@ -8,8 +8,13 @@
 #include "rtc.h"
 #include <stdint.h>
 #include "MKL25Z4.h"
+#include "binaryLogger.h"
+#include "project3.h"
 
 int RTC_cnt =0;
+
+
+
 
 void rtc_init()
 {
@@ -68,6 +73,11 @@ void rtc_init()
 
 void RTC_Seconds_IRQHandler()
 {
+	uint8_t payloadStr[] = "Heartbeat";
+
+	logOutputData(heartbeat_ptr, payloadStr , HEARTBEAT);
+
+	log_item(heartbeat_ptr,loggerBuffer);
 	RTC_cnt++;
 
 

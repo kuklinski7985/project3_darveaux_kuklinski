@@ -31,8 +31,11 @@
 #include "profilingFxn.h"
 #include "binaryLogger.h"
 #include "loggerQueue.h"
+#include "SPI.h"
+#include "gpio.h"
+#include "rtc.h"
 
-#define LOG_ITEM(data,buffer) log_item(data,buffer)
+
 
 CB_t * userbuff;        // define a pointer to our circular buffer structure, used in the UART
 uint8_t bufferSizeUART = 16;           //sets circular buffer size
@@ -43,43 +46,45 @@ uint8_t bufferSizeLogger = 128;  //should be big enough to contain an entire bin
 CB_status statusLogger;		//status enum for logger buffer
 
 /*creating logging event structures and pointers for all events*/
-binLogger_t logger_init;
-binLogger_t gpio_init;
-binLogger_t system_init;
-binLogger_t system_halted;
-binLogger_t info;
-binLogger_t warning;
-binLogger_t error;
-binLogger_t profiling_started;
-binLogger_t profiling_result;
-binLogger_t profiling_completed;
-binLogger_t data_received;
-binLogger_t data_analysis_started;
-binLogger_t data_alpha_count;
-binLogger_t data_num_count;
-binLogger_t data_punt_count;
-binLogger_t data_misc_count;
-binLogger_t data_analysis_complete;
-binLogger_t heartbeat;
+/*
+extern binLogger_t logger_init;
+extern binLogger_t gpio_init;
+extern binLogger_t system_init;
+extern binLogger_t system_halted;
+extern binLogger_t info;
+extern binLogger_t warning;
+extern binLogger_t error;
+extern binLogger_t profiling_started;
+extern binLogger_t profiling_result;
+extern binLogger_t profiling_completed;
+extern binLogger_t data_received;
+extern binLogger_t data_analysis_started;
+extern binLogger_t data_alpha_count;
+extern binLogger_t data_num_count;
+extern binLogger_t data_punt_count;
+extern binLogger_t data_misc_count;
+extern binLogger_t data_analysis_complete;
+extern binLogger_t heartbeat;
 
-binLogger_t * logger_init_ptr = &logger_init;
-binLogger_t * gpio_init_ptr = &gpio_init;
-binLogger_t * system_init_ptr = &system_init;
-binLogger_t * system_halted_ptr = &system_halted;
-binLogger_t * info_ptr = &info;
-binLogger_t * warning_ptr = &warning;
-binLogger_t * error_ptr = &error;
-binLogger_t * profiling_started_ptr = &profiling_started;
-binLogger_t * profiling_result_ptr = &profiling_result;
-binLogger_t * profiling_completed_ptr = &profiling_completed;
-binLogger_t * data_received_ptr = &data_received;
-binLogger_t * data_analysis_started_ptr = &data_analysis_started;
-binLogger_t * data_alpha_count_ptr = &data_alpha_count ;
-binLogger_t * data_num_count_ptr = &data_num_count;
-binLogger_t * data_punt_count_ptr = &data_punt_count;
-binLogger_t * data_misc_count_ptr = &data_misc_count;
-binLogger_t * data_analysis_complete_ptr = &data_analysis_complete;
-binLogger_t * heartbeat_ptr = &heartbeat;
+extern binLogger_t * logger_init_ptr = &logger_init;
+extern binLogger_t * gpio_init_ptr = &gpio_init;
+extern binLogger_t * system_init_ptr = &system_init;
+extern binLogger_t * system_halted_ptr = &system_halted;
+extern binLogger_t * info_ptr = &info;
+extern binLogger_t * warning_ptr = &warning;
+extern binLogger_t * error_ptr = &error;
+extern binLogger_t * profiling_started_ptr = &profiling_started;
+extern binLogger_t * profiling_result_ptr = &profiling_result;
+extern binLogger_t * profiling_completed_ptr = &profiling_completed;
+extern binLogger_t * data_received_ptr = &data_received;
+extern binLogger_t * data_analysis_started_ptr = &data_analysis_started;
+extern binLogger_t * data_alpha_count_ptr = &data_alpha_count ;
+extern binLogger_t * data_num_count_ptr = &data_num_count;
+extern binLogger_t * data_punt_count_ptr = &data_punt_count;
+extern binLogger_t * data_misc_count_ptr = &data_misc_count;
+extern binLogger_t * data_analysis_complete_ptr = &data_analysis_complete;
+extern binLogger_t * heartbeat_ptr = &heartbeat;
+*/
 
 void project3(void)
 {
@@ -101,6 +106,10 @@ void project3(void)
   /*Code specific to KL25Z. See notes in Main for compile time flag and
    * timer setup using IDE*/
 #ifdef PROFILEKL25Z
+
+  	  SPI_init();
+  	  GPIO_nrf_init();
+  	  rtc_init();
 	__enable_irq();  //enable global interrupts
 	NVIC_EnableIRQ(UART0_IRQn);    //enable uart0 interrupts
 	NVIC_EnableIRQ(TPM0_IRQn);

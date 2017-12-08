@@ -16,6 +16,8 @@
 #include "circbuff.h"
 #include "binaryLogger.h"
 #include "loggerQueue.h"
+#include "rtc.h"
+#include "MKL25Z4.h"
 
 
 void log_data (uint8_t * data, uint8_t length)
@@ -159,7 +161,7 @@ void logOutputData(binLogger_t *logEvent, uint8_t * inputPayload,
 	logEvent->logID = enumStatus;
 	logEvent->payload = inputPayload;
 	logEvent->logLength = strlen((char*)logEvent->payload);
-	logEvent->RTCtimeStamp = 2;  //need a function
+	logEvent->RTCtimeStamp = RTC_TSR;  //need a function
 
 	uint32_t checkSumValue = 0;
 	checkSumValue = (logEvent->logID) + (logEvent->RTCtimeStamp) +

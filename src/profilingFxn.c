@@ -13,6 +13,7 @@
 #include <string.h>
 #include "profilingFxn.h"
 
+
 #ifdef PROFILEKL25Z
 #include "MKL25Z4.h"
 #endif
@@ -189,6 +190,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			free(srcPtr);
 		}
 
+
 		if(i==2)
 		{
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
@@ -204,6 +206,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			UART_send_n(messageOut,messageOutLength);
 			free(srcPtr);
 		}
+
 
 		if(i ==3)
 		{
@@ -237,24 +240,32 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			free(srcPtr);
 		}
 
+
+/*
 		if(i==5)
 		{
 			uint8_t
+
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
 			TPM0->SC |= TPM_SC_CMOD(0b01);		//counter increments on every clock cycle and turns on
 
+
+
 			//PUT DMA my_memset FUNCTION CALL HERE
 
-			memset_dma(srcPtr,bytesMoved,'z',dst);
+			memset_dma( srcPtr, bytesMoved, 1,dst);
 
 			TPM0->SC |= TPM_SC_CMOD(0b00);		//turns off the counter
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
+
 			totalTime = endVal - startVal;		//getting execution time
 			uint8_t messageOut[] = "Profile DMA_my_memset  | # ticks: ";
 			UART_send_n(messageOut,messageOutLength);
 			free(srcPtr);
 		}
+*/
+
 		ticksPtr = my_itoa(totalTime, arrayTicks, 10);			//converts values to ASCII
 		valueLength = getValueLength(totalTime);
 		UART_send_n(ticksPtr, valueLength);						//sends message
