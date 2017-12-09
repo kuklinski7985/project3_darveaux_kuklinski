@@ -57,7 +57,7 @@ void process_Data()
 {
 	uint8_t * nullpayloadPtr = NULL;
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 	logOutputData(data_analysis_started_ptr, nullpayloadPtr, DATA_ANALYSIS_STARTED);
 	log_item(data_analysis_started_ptr,loggerBuffer);
@@ -211,7 +211,7 @@ void transmit_table()
 	//UART_send(&CR);  //send a carriage return
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 	logOutputData(data_alpha_count_ptr, Alph_Add, DATA_ALPHA_COUNT);
 	log_item(data_alpha_count_ptr,loggerBuffer);
@@ -297,25 +297,10 @@ void project3(void)
 	  SPI_init();
 	  GPIO_nrf_init();
 	  rtc_init();
-
-#ifdef LOG_ENABLE
-		if(log_flag =1)
-		{
-	  logOutputData(logger_init_ptr, nullpayloadPtr, LOGGER_INIT);
-	  log_item(logger_init_ptr,loggerBuffer);
-		}
-#endif
-
 	  DMA_init();
 	  myTPM_init();
 
-#ifdef LOG_ENABLE
-		if(log_flag =1)
-		{
-	  logOutputData(gpio_init_ptr, nullpayloadPtr, GPIO_INIT);
-	  log_item(gpio_init_ptr,loggerBuffer);
-		}
-#endif
+
 
 
 	NVIC_EnableIRQ(UART0_IRQn);    //enable uart0 interrupts
@@ -329,7 +314,7 @@ void project3(void)
 	statusLogger = CB_init(loggerBuffer,bufferSizeLogger);
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 	logOutputData(system_init_ptr, nullpayloadPtr, SYSTEM_INIT);
 	log_item(system_init_ptr,loggerBuffer);

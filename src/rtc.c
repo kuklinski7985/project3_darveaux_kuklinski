@@ -69,7 +69,9 @@ void rtc_init()
 
 void RTC_Seconds_IRQHandler()
 {
-
+#ifdef LOG_ENABLE
+	if(log_flag==1)
+	{
 	uint8_t payloadStr[] = "Heartbeat";
 
 	logOutputData(heartbeat_ptr, payloadStr , HEARTBEAT);
@@ -77,7 +79,8 @@ void RTC_Seconds_IRQHandler()
 	log_item(heartbeat_ptr,loggerBuffer);
 
 	RTC_cnt++;
-
+	}
+#endif
 
 
 }

@@ -1,5 +1,5 @@
 /**
-* @file uart.c
+  * @file uart.c
 * @brief defines uart operation and provides functions for uart operation and initialization
 * @author Andrew Kuklinski and Mason Darveaux
 * @date 12/08/2017
@@ -139,9 +139,9 @@ void UART0_IRQHandler()
 		}
 
 		#ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
-		logOutputData(data_received_ptr, &rx_packet, DATA_RECEIVED);
+ 		logOutputData(data_received_ptr, &rx_packet, DATA_RECEIVED);
 		log_item(data_received_ptr,loggerBuffer);
 		}
 		#endif

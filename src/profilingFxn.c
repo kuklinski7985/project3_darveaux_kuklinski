@@ -117,7 +117,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 	uint8_t infoBytesMoved[] = "bytes to be moved (next line for number): ";
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(info_ptr, infoBytesMoved, INFO);
 			log_item(info_ptr,loggerBuffer);
@@ -129,7 +129,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 
 	bytesPayloadPtr = my_itoa(bytesMoved, bytes, 10);			//converts values to ASCII
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 	logOutputData(info_ptr, bytesPayloadPtr, INFO);
 	log_item(info_ptr,loggerBuffer);
@@ -175,7 +175,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		if (srcPtr == NULL)
 		{
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			log_data(failedMessage,failedLength);
 			log_data_single(&CR);
@@ -188,7 +188,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
@@ -207,7 +207,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			totalTime = endVal - startVal;		//getting execution time
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_result_ptr, profilingResultpayload1, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
@@ -223,7 +223,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		if(i ==1)
 		{
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
@@ -241,7 +241,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			totalTime = endVal - startVal;		//getting execution time
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_result_ptr, profilingResultpayload2, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
@@ -257,7 +257,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
@@ -275,7 +275,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			totalTime = endVal - startVal;		//getting execution time
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_result_ptr, profilingResultpayload3, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
@@ -291,7 +291,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
@@ -309,7 +309,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			totalTime = endVal - startVal;		//getting execution time
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_result_ptr, profilingResultpayload4, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
@@ -325,7 +325,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		if(i==4)
 		{
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
@@ -343,7 +343,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			totalTime = endVal - startVal;		//getting execution time
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_result_ptr, profilingResultpayload5, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
@@ -360,7 +360,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		{
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
@@ -380,7 +380,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			totalTime = endVal - startVal;		//getting execution time
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 			logOutputData(profiling_result_ptr, profilingResultpayload1, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
@@ -396,7 +396,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 
 		ticksPtr = my_itoa(totalTime, arrayTicks, 10);			//converts values to ASCII
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 		logOutputData(profiling_result_ptr, ticksPtr, PROFILING_RESULT);
 		log_item(profiling_result_ptr,loggerBuffer);
@@ -411,7 +411,7 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 	}
 
 #ifdef LOG_ENABLE
-		if(log_flag =1)
+		if(log_flag ==1)
 		{
 	logOutputData(profiling_completed_ptr, profilingResultpayload7, PROFILING_COMPLETED);
 	log_item(profiling_completed_ptr,loggerBuffer);
