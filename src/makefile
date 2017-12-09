@@ -1,12 +1,12 @@
-SOURCES = main.c project3.c circbuff.c memory.c profilingFxn.c #uart.c
+SOURCES = main.c project3.c circbuff.c memory.c profilingFxn.c  conversion.c loggerQueue.c 
 
 CMOCKAS = unittest.c
 OBJS = $(SOURCES:.c=.o)
 IMP = $(SOURCES:.c=.i)
 
-DEBUG = -g -Wall -Werror -std=c99 -O0
+DEBUG = -g -Wall -std=c99 -O0
 CPPFLAGS = -DPROJECT3 -DVERBOSE
-LDFLAGS = -lm -Wl,-Map,project2.map
+LDFLAGS = -lm -Wl,-Map,project3.map
 CFLAGS = -c
 LFLAGS = -S
 
@@ -36,9 +36,6 @@ endif
 
 %.o:%.c
 	$(CC) $(DEBUG) $(CPPFLAGS) $(CFLAGS) -MMD $^ -o $@
-
-%.o:%.c
-	$(CC) $(DEBUG) $(CPPFLAGS) $(CFLAGS)  -MMD $^ -o $@
 
 
 %.i:%.c

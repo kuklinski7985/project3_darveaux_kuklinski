@@ -44,7 +44,7 @@ CB_status statusUART;		//define the circular buffer status structure
 CB_t * loggerBuffer;		//circular buffer for logger output
 uint8_t bufferSizeLogger = 128;  //should be big enough to contain an entire binlogger_t struct
 CB_status statusLogger;		//status enum for logger buffer
-
+#ifdef PROFILEKL25Z
 int32_t Alpha_count=0;  // used to count the number of alphabetical characters in the buffer
 int32_t Num_count=0;	// used to count the number of numerical characters in the buffer
 int32_t Punct_count=0;	// used to count the number of numerical characters in the buffer
@@ -252,7 +252,7 @@ void transmit_table()
 
 
 }
-
+#endif
 
 
 

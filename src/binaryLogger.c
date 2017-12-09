@@ -17,27 +17,55 @@
 #include "binaryLogger.h"
 #include "loggerQueue.h"
 #include "rtc.h"
+#ifdef PROFILEKL25Z
 #include "MKL25Z4.h"
+#endif
+#include <time.h>
+#include <sys/time.h>
 
 
 void log_data (uint8_t * data, uint8_t length)
 {
+  #ifdef PROFILEkl25Z
 	UART_send_n(data,length);
+	#endif
+
+#if defined (PROFILEHOST) || (PROFILEBBB)
+
+	uint8_t i = 0;
+	for(i=0; i<length; i++)
+	  {
+	    printf("%d",*(data+i));
+	  }
+	#endif
+	
 	return;
 }
 
 void log_data_single(uint8_t * data)
 {
-	UART_send(data);
+  #ifdef PROFILEKL25Z
+  UART_send(data);
+	  #endif
+
+  #if defined (PROFILEHOST) || (PROFILEBBB)
+  	    printf("%d",*data);
+#endif
 	return;
 }
 
 void log_string (uint8_t *input)
 {
+  
 	uint8_t inputLength = 0;
 	inputLength = strlen((char*)input);
-
+#ifdef PROFILEKL25Z
 	UART_send_n(input, inputLength);
+	#endif
+  #if defined (PROFILEHOST) || (PROFILEBBB)
+	printf("%s",input);
+	#endif
+	
 	return;
 }
 
@@ -49,8 +77,18 @@ void log_integer(uint32_t integerInput)
 
 	valuePtr = my_itoa(integerInput,arrayLength,10);
 	integerLength = getValueLength(integerInput);
-
+        #ifdef PROFILEKL25Z
 	UART_send_n(valuePtr,integerLength);
+         #endif
+	
+	#if defined (PROFILEHOST) || (PROFILEBBB)
+
+	uint8_t i = 0;
+	for(i=0; i<integerLength; i++)
+	  {
+	    printf("%d",*(valuePtr+i));
+	  }
+	#endif
 	return;
 }
 
@@ -69,7 +107,7 @@ CB_status log_flush(CB_t * inputBuffer)
 		#endif
 
 		#if defined (PROFILEHOST) || defined (PROFILEBBB)
-			printf("%c",inputBuffer->poppedData);
+			printf("%c",*(inputBuffer->poppedData));
 		#endif
 	}
 	return statusCheck;
@@ -151,8 +189,9 @@ void log_item(binLogger_t * inputEvent, CB_t* logBuff)
 
 	loggerEventToBuffer(logBuff,0x0d);
 
+#ifdef PROFILEKL25Z
 	UART0_S1 |= (UART_S1_TDRE_MASK);
-
+#endif
 	log_flush(logBuff);		//outputs the entire buffer up this point
 	return;
 }
@@ -160,11 +199,19 @@ void log_item(binLogger_t * inputEvent, CB_t* logBuff)
 void logOutputData(binLogger_t *logEvent, uint8_t * inputPayload,
 		logger_status enumStatus)
 {
+
 	logEvent->logID = enumStatus;
 	logEvent->payload = inputPayload;
 	logEvent->logLength = strlen((char*)logEvent->payload);
+#ifdef PROFILEKL25Z
 	logEvent->RTCtimeStamp = RTC_TSR;
+#endif
+#if defined (PROFILEHOST) || (PROFILEBBB)
+        struct timeval time;
+        gettimeofday(&time, NULL);
+	logEvent->RTCtimeStamp = time.tv_sec;
 
+#endif
 	uint32_t checkSumValue = 0;
 	checkSumValue = (logEvent->logID) + (logEvent->RTCtimeStamp) +
 			(logEvent->logLength);

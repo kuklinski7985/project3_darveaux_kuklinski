@@ -11,7 +11,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "memory.h"
+#ifdef PROFILEKL25Z
 #include "MKL25Z4.h"
+#endif
 
 uint8_t transfer_cnt = 0;
 
@@ -172,7 +174,7 @@ void free_words(uint32_t * src)
   //frees memory previously allocated using malloc
   free(src);
 }
-
+#ifdef PROFILEKL25Z
 void memmove_dma(uint8_t * src, uint8_t * dst, size_t length)
 {
 	uint32_t source_dummy = (uint32_t)src;
@@ -234,3 +236,4 @@ void DMA0_IRQHandler()
 	transfer_cnt++;
 }
 
+#endif

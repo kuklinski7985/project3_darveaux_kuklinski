@@ -52,7 +52,10 @@ void profile_All_BBB(uint16_t bytesMoved)  //code for host and BBB
 
 	  struct timeval start, end;
 	  uint16_t totaltime;
-
+	  
+        struct timeval time;
+        gettimeofday(&time, NULL);
+	printf("timestamp: %ld\n\n",time.tv_sec);
 	  for(uint8_t i=0; i<6; i++)
 	  {
 		  totaltime = 0;
