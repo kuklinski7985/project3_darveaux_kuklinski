@@ -151,6 +151,8 @@ void log_item(binLogger_t * inputEvent, CB_t* logBuff)
 
 	loggerEventToBuffer(logBuff,0x0d);
 
+	UART0_S1 |= (UART_S1_TDRE_MASK);
+
 	log_flush(logBuff);		//outputs the entire buffer up this point
 	return;
 }
@@ -161,7 +163,7 @@ void logOutputData(binLogger_t *logEvent, uint8_t * inputPayload,
 	logEvent->logID = enumStatus;
 	logEvent->payload = inputPayload;
 	logEvent->logLength = strlen((char*)logEvent->payload);
-	logEvent->RTCtimeStamp = RTC_TSR;  //need a function
+	logEvent->RTCtimeStamp = RTC_TSR;
 
 	uint32_t checkSumValue = 0;
 	checkSumValue = (logEvent->logID) + (logEvent->RTCtimeStamp) +

@@ -13,9 +13,6 @@
 
 int RTC_cnt =0;
 
-
-
-
 void rtc_init()
 {
 	  // enable internal reference clock, MCGIRCLK is active
@@ -53,13 +50,12 @@ void rtc_init()
 	  RTC_IER = 0x00;  // Clear IER register
 
 	  //Enable seconds interrupt for RTC module and enable the irq
-	  __enable_irq();  //enable global interrupts
-	  NVIC_EnableIRQ(RTC_Seconds_IRQn);
+
 
 	  RTC_IER |= RTC_IER_TSIE_MASK;
 
 	  // Set Time Seconds Register
-	  RTC_TSR = 0x00;
+	  RTC_TSR = 0x01;
 
 
 	  //Enable time counter
@@ -73,11 +69,13 @@ void rtc_init()
 
 void RTC_Seconds_IRQHandler()
 {
+
 	uint8_t payloadStr[] = "Heartbeat";
 
 	logOutputData(heartbeat_ptr, payloadStr , HEARTBEAT);
 
 	log_item(heartbeat_ptr,loggerBuffer);
+
 	RTC_cnt++;
 
 

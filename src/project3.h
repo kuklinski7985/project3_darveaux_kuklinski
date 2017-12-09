@@ -8,11 +8,12 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "circbuff.h"
-#include "binaryLogger.h"
 
 #ifndef project3_h_
 #define project3_h_
+
+#include "circbuff.h"
+#include "binaryLogger.h"
 
 extern binLogger_t logger_init;
 extern binLogger_t gpio_init;
@@ -53,7 +54,6 @@ extern binLogger_t * data_analysis_complete_ptr;
 extern binLogger_t * heartbeat_ptr;
 extern CB_t * loggerBuffer;		//circular buffer for logger output
 
-
 /**
  *@brief contains all functions and operations necessary to solve project3 assignments
  *
@@ -62,5 +62,25 @@ extern CB_t * loggerBuffer;		//circular buffer for logger output
  *@return VOID
  */
 void project3(void);
+
+/**
+ *@brief processes received data
+ *
+ *@param none
+ *
+ *@return VOID
+ */
+
+void process_Data();
+
+/**
+ *@brief transmits data statistics to terminal
+ *
+ *@param none
+ *
+ *@return VOID
+ */
+
+void transmit_table();
 
 #endif /*__project3_h__*/

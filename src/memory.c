@@ -223,14 +223,14 @@ void DMA_init()
 	DMA_DCR0 |= DMA_DCR_DINC_MASK;  // sets bit 19 of DCR equal to 1 in order to increment the DAR after a successful transfer
 	DMA_DCR0 |= 0x100000;  //sets bit 20 of the DCR equal to 1 in order to enable 8 bit source transfers
 	DMA_DCR0 |= DMA_DCR_SINC_MASK; // sets bit 22 of the DCR equal to 1 in order to increment the SAR after a successful transfer
-	DMA_DCR0 |= DMA_DCR_EINT_MASK; // sets bit 31 of the DCR equal to 1 in order to generate an interrupt after a complete transfer
+	//DMA_DCR0 |= DMA_DCR_EINT_MASK; // sets bit 31 of the DCR equal to 1 in order to generate an interrupt after a complete transfer
 
-	NVIC_EnableIRQ(DMA0_IRQn);    //enable DMA0 interrupts
+
 
 }
 
 void DMA0_IRQHandler()
 {
-	//transfer_cnt++;
+	transfer_cnt++;
 }
 

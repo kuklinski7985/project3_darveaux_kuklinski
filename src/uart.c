@@ -11,6 +11,8 @@
 #include "uart.h"
 #include "MKL25Z4.h"
 #include "circbuff.h"
+#include "project3.h"
+#include "loggerQueue.h"
 
 CB_t * userbuff;
 uint8_t size;               //sets circular buffer size
@@ -56,6 +58,8 @@ UART0_C2 |= UART_C2_RIE_MASK; //enables interrupt generation for UART0 receiver
 
 UART0->C2 |= UART_C2_TE_MASK;  //enable transmitter for UART 0
 UART0->C2 |= UART_C2_RE_MASK;  //enable receiver for UART 0
+UART0_S1 |= (UART_S1_TDRE_MASK);
+
 }
 
 
@@ -120,6 +124,8 @@ void UART0_IRQHandler()
 		{
 			dump_flag=1;
 		}
+		logOutputData(data_received_ptr, &rx_packet, DATA_RECEIVED);
+		log_item(data_received_ptr,loggerBuffer);
 	}
 }
 

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "circbuff.h"
 
 #ifndef loggerQueue_h_
 #define loggerQueue_h_
