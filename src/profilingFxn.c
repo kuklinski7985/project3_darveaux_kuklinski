@@ -112,14 +112,26 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 	bytes[0] = bytesMoved && 0x00FF;
 	bytes[1] = (bytesMoved && 0xFF00)>>8;
 	uint8_t infoBytesMoved[] = "bytes to be moved (next line for number): ";
-	logOutputData(info_ptr, infoBytesMoved, INFO);
-	log_item(info_ptr,loggerBuffer);
+
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
+			logOutputData(info_ptr, infoBytesMoved, INFO);
+			log_item(info_ptr,loggerBuffer);
+		}
+#endif
 
 	uint16_t bytesMovedpayload[6] = {0};
 	uint8_t * bytesPayloadPtr;
+
 	bytesPayloadPtr = my_itoa(bytesMoved, bytes, 10);			//converts values to ASCII
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 	logOutputData(info_ptr, bytesPayloadPtr, INFO);
 	log_item(info_ptr,loggerBuffer);
+		}
+#endif
 
 	uint8_t failedMessage[] = "Malloc failed!";
 	uint8_t failedLength = 14;
@@ -159,16 +171,26 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		srcPtr = (uint8_t*)malloc((sizeof(uint8_t))*bytesMoved);
 		if (srcPtr == NULL)
 		{
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			log_data(failedMessage,failedLength);
 			log_data_single(&CR);
+		}
+#endif
 			return;
 		}
 
 		if(i == 0)
 		{
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
+		}
+#endif
 
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
@@ -181,8 +203,14 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_result_ptr, profilingResultpayload1, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
+		}
+#endif
+
 
 			//uint8_t messageOut[] = "Profile memmove        | # ticks: ";
 			//UART_send_n(messageOut,messageOutLength);
@@ -191,8 +219,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 
 		if(i ==1)
 		{
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
+		}
+#endif
 
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
@@ -204,8 +237,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_result_ptr, profilingResultpayload2, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
+		}
+#endif
 
 			//uint8_t messageOut[] = "Profile my_memmove     | # ticks: ";
 			//UART_send_n(messageOut,messageOutLength);
@@ -215,8 +253,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		if(i==2)
 		{
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
+		}
+#endif
 
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
@@ -228,8 +271,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_result_ptr, profilingResultpayload3, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
+		}
+#endif
 
 			//uint8_t messageOut[] = "Profile DMA_my_memmove | # ticks: ";
 			//UART_send_n(messageOut,messageOutLength);
@@ -239,8 +287,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		if(i ==3)
 		{
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
+		}
+#endif
 
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
@@ -252,8 +305,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_result_ptr, profilingResultpayload4, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
+		}
+#endif
 
 
 			//uint8_t messageOut[] = "Profile memset         | # ticks: ";
@@ -263,8 +321,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 
 		if(i==4)
 		{
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
+		}
+#endif
 
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
@@ -276,8 +339,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_result_ptr, profilingResultpayload5, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
+		}
+#endif
 
 			//uint8_t messageOut[] = "Profile my_memset      | # ticks: ";
 			//UART_send_n(messageOut,messageOutLength);
@@ -288,8 +356,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		if(i==5)
 		{
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_started_ptr, profilStartpayload, PROFILING_STARTED);
 			log_item(profiling_started_ptr,loggerBuffer);
+		}
+#endif
 			uint8_t
 			TPM0->CNT = TPM_CNT_COUNT(0x0);		//initialize counter register to zero
 			startVal = TPM0->CNT;				//read start value of counter
@@ -303,8 +376,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 			endVal = TPM0->CNT;					//reading the counter value after running test fxn
 			totalTime = endVal - startVal;		//getting execution time
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 			logOutputData(profiling_result_ptr, profilingResultpayload1, PROFILING_RESULT);
 			log_item(profiling_result_ptr,loggerBuffer);
+		}
+#endif
 
 			//uint8_t messageOut[] = "Profile DMA_my_memset  | # ticks: ";
 			//UART_send_n(messageOut,messageOutLength);
@@ -314,8 +392,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		*/
 
 		ticksPtr = my_itoa(totalTime, arrayTicks, 10);			//converts values to ASCII
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 		logOutputData(profiling_result_ptr, ticksPtr, PROFILING_RESULT);
 		log_item(profiling_result_ptr,loggerBuffer);
+		}
+#endif
 
 
 
@@ -324,8 +407,13 @@ void profile_All_KL25Z(uint16_t bytesMoved)
 		//UART_send(&CR);  										//send a carriage return
 	}
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 	logOutputData(profiling_completed_ptr, profilingResultpayload7, PROFILING_COMPLETED);
 	log_item(profiling_completed_ptr,loggerBuffer);
+		}
+#endif
 	return;
 }
 

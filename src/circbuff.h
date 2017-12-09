@@ -61,7 +61,7 @@ CB_status CB_buffer_remove_item(CB_t * buff, uint8_t * removedData);
  *@return status of buffer or an error code
 
  */
-CB_status CB_is_full(CB_t * buff);
+__attribute__((always_inline)) CB_status CB_is_full(CB_t * buff);
 
 
 /**
@@ -72,7 +72,7 @@ CB_status CB_is_full(CB_t * buff);
  *@return the status of the buffer or an error code
 
  */
-CB_status CB_is_empty(CB_t * buff);
+__attribute__((always_inline)) CB_status CB_is_empty(CB_t * buff);
 
 
 /**

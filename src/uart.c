@@ -124,8 +124,29 @@ void UART0_IRQHandler()
 		{
 			dump_flag=1;
 		}
+
+
+		// space character to disable logging
+		if (rx_packet == 0x20)
+		{
+			log_flag =0;
+		}
+
+		// ! character to reenable logging
+		if (rx_packet == 0x21)
+		{
+			log_flag =1;
+		}
+
+		#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 		logOutputData(data_received_ptr, &rx_packet, DATA_RECEIVED);
 		log_item(data_received_ptr,loggerBuffer);
+		}
+		#endif
+
+
 	}
 }
 

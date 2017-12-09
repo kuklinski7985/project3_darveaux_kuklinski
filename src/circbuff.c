@@ -68,7 +68,7 @@ CB_status CB_buffer_remove_item(CB_t * buff, uint8_t * removedData)
   return no_error;
 }
 
-CB_status CB_is_full(CB_t * buff)
+__attribute__((always_inline)) CB_status CB_is_full(CB_t * buff)
 {
   if((buff->count) == (buff->buffLength-1))
   {
@@ -80,7 +80,7 @@ CB_status CB_is_full(CB_t * buff)
   }
 }
 
-CB_status CB_is_empty(CB_t * buff)
+ __attribute__((always_inline)) CB_status CB_is_empty(CB_t * buff)
 {
   if((buff->headptr) == (buff->tailptr))
     {

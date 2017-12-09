@@ -56,8 +56,13 @@ uint8_t dump_flag = 0;
 void process_Data()
 {
 	uint8_t * nullpayloadPtr = NULL;
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 	logOutputData(data_analysis_started_ptr, nullpayloadPtr, DATA_ANALYSIS_STARTED);
 	log_item(data_analysis_started_ptr,loggerBuffer);
+		}
+#endif
 
 	int i=0;
 	uint8_t D;  // intermediate variable used to read bytes from circular buffer
@@ -205,8 +210,12 @@ void transmit_table()
 	//UART_send_n(Alph_Add, Alpha_asc_length);
 	//UART_send(&CR);  //send a carriage return
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
 	logOutputData(data_alpha_count_ptr, Alph_Add, DATA_ALPHA_COUNT);
 	log_item(data_alpha_count_ptr,loggerBuffer);
+
 
 	//transmit numeric statistics
 	//UART_send_n(Num, Num_Length);
@@ -216,13 +225,16 @@ void transmit_table()
 	logOutputData(data_num_count_ptr, Num_Add, DATA_NUM_COUNT);
 	log_item(data_num_count_ptr,loggerBuffer);
 
+
 	//transmit punctuation statistics
 	//UART_send_n(Punct, Punct_Length);
 	//UART_send_n(Punc_Add, Punct_asc_length);
 	//UART_send(&CR);  //send a carriage return
 
+
 	logOutputData(data_punt_count_ptr, Punc_Add, DATA_PUNT_COUNT);
 	log_item(data_punt_count_ptr,loggerBuffer);
+
 
 	//transmit miscellaneous statistics
 	//UART_send_n(Misc, Misc_Length);
@@ -235,6 +247,9 @@ void transmit_table()
 	uint8_t * nullpayloadPtr = NULL;
 	logOutputData(data_analysis_complete_ptr, nullpayloadPtr, DATA_ANALYSIS_COMPLETE);
 	log_item(data_analysis_complete_ptr,loggerBuffer);
+		}
+#endif
+
 
 }
 
@@ -262,6 +277,8 @@ void project3(void)
    * timer setup using IDE*/
 #ifdef PROFILEKL25Z
 
+  uint8_t * nullpayloadPtr = NULL;
+
   userbuff = (CB_t*) malloc(sizeof(CB_t));  //allocate space for the circular buffer struct
 
   	if(userbuff == NULL)
@@ -275,13 +292,30 @@ void project3(void)
   		return;
   	}
 
-  UART_configure();                //configures the UART
+	  UART_configure();                //configures the UART
+
 	  SPI_init();
 	  GPIO_nrf_init();
 	  rtc_init();
+
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
+	  logOutputData(logger_init_ptr, nullpayloadPtr, LOGGER_INIT);
+	  log_item(logger_init_ptr,loggerBuffer);
+		}
+#endif
+
 	  DMA_init();
 	  myTPM_init();
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
+	  logOutputData(gpio_init_ptr, nullpayloadPtr, GPIO_INIT);
+	  log_item(gpio_init_ptr,loggerBuffer);
+		}
+#endif
 
 
 	NVIC_EnableIRQ(UART0_IRQn);    //enable uart0 interrupts
@@ -290,9 +324,17 @@ void project3(void)
 	__enable_irq();  //enable global interrupts
 
 
+
 	statusUART = CB_init(userbuff,bufferSizeUART);    // initialize the circular buffer
 	statusLogger = CB_init(loggerBuffer,bufferSizeLogger);
 
+#ifdef LOG_ENABLE
+		if(log_flag =1)
+		{
+	logOutputData(system_init_ptr, nullpayloadPtr, SYSTEM_INIT);
+	log_item(system_init_ptr,loggerBuffer);
+		}
+#endif
 
 
 
@@ -304,16 +346,7 @@ void project3(void)
 
 	profile_All_KL25Z(5000);
 
-	/*
-	//uint8_t testVar = 't';
 
-	//uint8_t payloadStr[] = {0};
-	uint8_t payloadStr[] = "testing, something longer than 1 digit";
-	//payloadStr[0] = testVar;
-	//my_itoa(testVar, &payloadStr[0], 10);
-	logOutputData(logger_init_ptr, payloadStr, PROFILING_STARTED);
-	//LOG_ITEM(logger_init_ptr,loggerBuffer);
-	LOG_ITEM(logger_init_ptr,loggerBuffer);*/
 
 
 	for(;;)

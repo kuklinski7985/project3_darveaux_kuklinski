@@ -21,6 +21,8 @@ extern CB_status status;       //define the circular buffer status structure
 
 extern uint8_t dump_flag;      //define a flag to determine when to transmit data statistics
 
+uint8_t log_flag =1;
+
 
 /* 1. when using kinetis IDE, you will have to add the -DPROJECT3 and -DPROFILEKL25Z tags to the complier
  * 2. you will also have to increase the size of the heap to as least 0x3500

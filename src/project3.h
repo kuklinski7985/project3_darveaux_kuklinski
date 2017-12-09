@@ -54,6 +54,8 @@ extern binLogger_t * data_analysis_complete_ptr;
 extern binLogger_t * heartbeat_ptr;
 extern CB_t * loggerBuffer;		//circular buffer for logger output
 
+extern uint8_t log_flag;
+
 /**
  *@brief contains all functions and operations necessary to solve project3 assignments
  *
